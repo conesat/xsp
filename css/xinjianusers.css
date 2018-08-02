@@ -1,0 +1,55 @@
+.pet_circle_nav{
+	padding-top: 70px;
+}
+
+.pet_circle_nav_list li{
+	width: 100%;
+	margin: 0;
+}
+
+.pet_content_list{
+	padding-top: 0px;
+}
+
+.pet_article_like{
+	padding-top: 2px;
+	padding-right: 0;
+	padding-left: 0;
+	padding-bottom: 0;
+}
+.am-panel-default>.am-panel-hd{
+	font-size: 18px;
+}
+
+.am-panel-bd{
+	margin: 0px;
+}
+
+.am-icon-btn{
+	width: 40px;
+	height: 40px;
+	font-size: 20px;
+	line-height: 40px;
+	color: #0084C7;
+}
+.am-accordion-gapped{
+	margin: 2px;
+	font-size: 14px;
+}
+.am-list>li>a{
+	font-size: 14px;
+	padding: 0;
+}
+
+.am-list>li>span{
+	font-size: 13px;
+	cursor:pointer;
+}
+.pet_circle_nav{
+	padding-bottom: 0;
+}
+
+.xinjianuser-button{
+	margin-top: 10px;
+	margin-bottom: 40px;
+}

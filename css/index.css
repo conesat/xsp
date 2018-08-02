@@ -1,0 +1,108 @@
+
+body {
+	font-size: 1.2em;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	 background:#ececec;
+}
+/* 覆盖 */
+ul,li { list-style: none; padding: 0; margin: 0}
+/* 轮播 */
+.am-slider-a1 .am-control-nav li { position: relative;}
+.am-slider-a1 .am-control-nav li a { background: #bcbcbc; opacity: .5;  }
+.am-slider-a1 .am-control-nav li a:hover {}
+.am-slider-a1 .am-control-nav li a.am-active { background: #bcbcbc;-webkit-box-shadow:none;box-shadow:none;  opacity: 1;}
+.am-slider-a1 .am-control-nav {bottom: 18px; z-index: 2;}
+.pet_slider_shadow { position: absolute;  background: url(../img/flshadow.png) bottom no-repeat; -webkit-background-size: 100%;
+background-size: 100%; width: 100%; height: 100%; bottom: 0; left: 0; z-index: 1;}
+.pet_slider_font {position: absolute; bottom: 35px; left: 20px; z-index: 8; color: #fff;}
+.pet_slider_emoji { display: block; font-size: 12px; }
+.am-panel-bd .am-tabs{
+	margin: 0;
+}
+
+.am-panel-bd{
+	padding: 0;
+}
+@font-face {
+  font-family: 'icomoon';
+  src:  url('../fonts/icomoon.eot?fxmy6y');
+  src:  url('../fonts/icomoon.eot?fxmy6y#iefix') format('embedded-opentype'),
+    url('../fonts/icomoon.ttf?fxmy6y') format('truetype'),
+    url('../fonts/icomoon.woff?fxmy6y') format('woff'),
+    url('../fonts/icomoon.svg?fxmy6y#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.am-modal-alert{
+	z-index: 9999;
+}
+
+
+.icon-anzhuo:before {
+  content: "\e904";
+}
+.icon-c_c:before {
+  content: "\e90a";
+}
+.icon-java:before {
+  content: "\e90b";
+}
+.icon-java_web:before {
+  content: "\e90c";
+}
+.icon-jiaruwomen:before {
+  content: "\e90d";
+}
+.icon-lianxiwomen:before {
+  content: "\e90e";
+}
+.icon-net:before {
+  content: "\e90f";
+}
+.icon-qianduan:before {
+  content: "\e910";
+}
+.icon-banji:before {
+  content: "\e900";
+}
+.icon-dongtai:before {
+  content: "\e901";
+}
+.icon-fabu:before {
+  content: "\e902";
+}
+.icon-gengduo:before {
+  content: "\e903";
+}
+.icon-guanyu:before {
+  content: "\e905";
+}
+.icon-tijiao:before {
+  content: "\e906";
+}
+.icon-xinwen:before {
+  content: "\e907";
+}
+.icon-zhoubian:before {
+  content: "\e908";
+}
+.icon-renminbi:before {
+  content: "\e909";
+}

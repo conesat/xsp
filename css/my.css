@@ -1,0 +1,18 @@
+.am-tabs {
+	margin: 20px auto;
+	display: block;
+	float: none;
+	
+}
+
+.pet_content{
+	background-color: #ffffff;
+}
+
+.am-header .am-header-nav img{
+	height: 25px;
+}
+
+body{
+	font-size: 1em;
+}
