@@ -43,3 +43,7 @@ ul.am-dropdown-content>li>a {
 	margin-left: 0;
 	margin-right: 0;
 }
+
+.am-form .am-form-group .my_border_color_red {
+	border-color: red;
+}

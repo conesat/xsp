@@ -21,14 +21,14 @@ import javax.mail.internet.MimeMultipart;
 
 public class SendMail2 {
 
-    private String host = ""; // smtp������
-    private String from = ""; // �����˵�ַ
-    private String to = ""; // �ռ��˵�ַ
-    private String affix = ""; // ������ַ
-    private String affixName = ""; // ��������
-    private String user = ""; // �û���
-    private String pwd = ""; // ����
-    private String subject = ""; // �ʼ�����
+    private String host = ""; // smtp服务器
+    private String from = ""; // 发件人地址
+    private String to = ""; // 收件人地址
+    private String affix = ""; // 附件地址
+    private String affixName = ""; // 附件名称
+    private String user = ""; // 用户名
+    private String pwd = ""; // 密码
+    private String subject = ""; // 邮件标题
 
     public void setAddress(String from, String to, String subject) {
         this.from = from;
@@ -41,69 +41,69 @@ public class SendMail2 {
         this.affixName = affixName;
     }
 
-    public void send(String host, String user, String pwd) {
+    public void send(String host, String user, String pwd,String msg) {
         this.host = host;
         this.user = user;
         this.pwd = pwd;
 
         Properties props = new Properties();
 
-        // ���÷����ʼ����ʼ������������ԣ�����ʹ�����׵�smtp��������
+        // 设置发送邮件的邮件服务器的属性（这里使用网易的smtp服务器）
         props.put("mail.smtp.host", host);
         props.put("mail.transport.protocol", "smtp");
-        // ��Ҫ������Ȩ��Ҳ�����л����������У�飬��������ͨ����֤
+        // 需要经过授权，也就是有户名和密码的校验，这样才能通过验证
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", 465);
         props.put("mail.smtp.ssl.enable", true);
         props.put("mail.smtp.socketFactory.port", 465);
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        // �øո����úõ�props���󹹽�һ��session
+        // 用刚刚设置好的props对象构建一个session
         Session session = Session.getDefaultInstance(props);
 
-        // ������������ڷ����ʼ��Ĺ�������console����ʾ������Ϣ��������ʹ
-        // �ã�������ڿ���̨��console)�Ͽ��������ʼ��Ĺ��̣�
+        // 有了这句便可以在发送邮件的过程中在console处显示过程信息，供调试使
+        // 用（你可以在控制台（console)上看到发送邮件的过程）
         session.setDebug(true);
 
-        // ��sessionΪ����������Ϣ����
+        // 用session为参数定义消息对象
         MimeMessage message = new MimeMessage(session);
         try {
-            // ���ط����˵�ַ
+            // 加载发件人地址
             message.setFrom(new InternetAddress(from));
-            // �����ռ��˵�ַ
+            // 加载收件人地址
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(
                     to));
-            // ���ر���
+            // 加载标题
             message.setSubject(subject);
 
-            // ��multipart����������ʼ��ĸ����������ݣ������ı����ݺ͸���
+            // 向multipart对象中添加邮件的各个部分内容，包括文本内容和附件
             Multipart multipart = new MimeMultipart();
 
-            // �����ʼ����ı�����
+            // 设置邮件的文本内容
             BodyPart contentPart = new MimeBodyPart();
-            contentPart.setText("����һ���Զ��ʼ������°������154���У��ҵ�ǼǱ�ѹ���ļ���<a href='http://www.chinahg.top/bg/downLoadZIP'>�����ļ�<a>");
+            contentPart.setText(msg);
             multipart.addBodyPart(contentPart);
-            // ��Ӹ���
+            // 添加附件
             BodyPart messageBodyPart = new MimeBodyPart();
             DataSource source = new FileDataSource(affix);
-            // ��Ӹ���������
+            // 添加附件的内容
             messageBodyPart.setDataHandler(new DataHandler(source));
-            // ��Ӹ����ı���
-            // �������Ҫ��ͨ�������Base64�����ת�����Ա�֤������ĸ����������ڷ���ʱ����������
+            // 添加附件的标题
+            // 这里很重要，通过下面的Base64编码的转换可以保证你的中文附件标题名在发送时不会变成乱码
             sun.misc.BASE64Encoder enc = new sun.misc.BASE64Encoder();
             messageBodyPart.setFileName("=?GBK?B?"
                     + enc.encode(affixName.getBytes()) + "?=");
             multipart.addBodyPart(messageBodyPart);
 
-            // ��multipart����ŵ�message��
+            // 将multipart对象放到message中
             message.setContent(multipart);
-            // �����ʼ�
+            // 保存邮件
             message.saveChanges();
-            // �����ʼ�
+            // 发送邮件
             Transport transport = session.getTransport("smtp");
-            // ���ӷ�����������
+            // 连接服务器的邮箱
             System.out.println(host+" "+user+" "+pwd);
             transport.connect(host, user, pwd);
-            // ���ʼ����ͳ�ȥ
+            // 把邮件发送出去
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
         } catch (Exception e) {

@@ -8,5 +8,5 @@ public interface LoginAndRegisterServices {
 
 	public User login(User user);
 	
-	public boolean register(User user);
+	public int register(User user);
 }

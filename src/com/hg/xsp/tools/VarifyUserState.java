@@ -7,17 +7,17 @@ public class VarifyUserState {
 	
 	
 	/**
-	 * �жϵ�¼�˺ſ�����
+	 * 判断登录账号可用性
 	 * 
 	 * @return
 	 */
 	public static int verifyUser(HttpServletRequest request, Model model) {
 		Object object= request.getSession().getAttribute("user_number");
 		if (object==null) {
-			model.addAttribute("msg", "����ѹ��ڣ������µ�¼��");
+			model.addAttribute("msg", "身份已过期，请重新登录！");
 			return 1;
 		} else if (SessionListener.getSession(object.toString()) != request.getSession()) {
-			model.addAttribute("msg", "�˺��������ط���½������Ǳ��˵�¼�뾡���޸����룡�����µ�¼��");
+			model.addAttribute("msg", "账号在其他地方登陆！，如非本人登录请尽快修改密码！请重新登录！");
 			return 1;
 		}else {
 			return 0;

@@ -36,17 +36,7 @@
 						<li><a href="#">捐助</a></li>
 					</ul></li>
 			</ul>
-			<!--	<div class="am-header-left am-header-nav">
-						<a href="#left-link" class="">
-							<img src="imgs/hglogo.png" alt=""> 去首页
-						</a>
-					</div>
-
-					<h1 class="am-header-title">
-			          <a href="#title-link" class="">
-			           学生派
-			          </a>
-			      </h1>--> </header>
+			</header>
 		</div>
 		<div class="pet_content">
 			<div data-am-widget="tabs"
@@ -94,42 +84,42 @@
 
 					</div>
 					<div data-tab-panel-1 class="am-tab-panel ">
-						<form class="am-form am-form-horizontal">
+						<form class="am-form am-form-horizontal" action="javascript:;">
 							<div class="am-form-group">
 								<div class="am-u-sm-12">
-									<input type="email" class="am-radius" id="doc-ipt-3"
+									<input type="email" class="am-radius" id="register_mail"
 										placeholder="输入你的电子邮件">
 								</div>
 							</div>
 
 							<div class="am-form-group">
 								<div class="am-u-sm-12">
-									<input type="password" class="am-radius" id="doc-ipt-pwd-2"
+									<input type="password" class="am-radius" id="register_pd1"
 										placeholder="输入密码">
 								</div>
 							</div>
 
 							<div class="am-form-group">
 								<div class="am-u-sm-12">
-									<input type="password" class="am-radius" id="doc-ipt-pwd-2"
+									<input type="password" class="am-radius" id="register_pd2"
 										placeholder="确认密码">
 								</div>
 							</div>
 
 							<div class="am-form-group">
 								<div class="am-u-sm-12">
-									<input type="password" class="am-radius" id="doc-ipt-pwd-2"
+									<input type="text" class="am-radius" id="register_name"
 										placeholder="输入姓名">
 								</div>
 							</div>
 
 							<div class="am-form-group">
 								<div class="am-u-sm-6">
-									<input type="password" class="am-radius" id="doc-ipt-pwd-2"
+									<input type="text" class="am-radius" id="register_code"
 										placeholder="输入验证码">
 								</div>
 								<div class="am-u-sm-6">
-									<button type="button"
+									<button id="get_code"
 										class="am-btn am-btn-primary am-btn-block">获取验证码</button>
 								</div>
 
@@ -137,8 +127,8 @@
 
 							<div class="am-form-group">
 								<div class="am-u-sm-12">
-									<button type="submit"
-										class="am-btn am-btn-primary am-btn-block">登录</button>
+									<button id="register"
+										class="am-btn am-btn-primary am-btn-block">注册</button>
 
 								</div>
 							</div>
@@ -151,7 +141,15 @@
 
 	</div>
 	<br />
-
+	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm">
+		<div class="am-modal-dialog">
+			<div class="am-modal-hd">提示</div>
+			<div class="am-modal-bd" id="dialog_title"></div>
+			<div class="am-modal-footer">
+				<span class="am-modal-btn" data-am-modal-confirm>确定</span>
+			</div>
+		</div>
+	</div>
 	<div class="pet_article_footer_info">
 		<div class="pet_article_dowload_content_font"></div>
 		Copyright(c)2018 hg All Rights Reserved 广西科技大学红格互联
@@ -162,38 +160,116 @@
 	<script src="js/jquery.min.js"></script>
 	<script src="js/amazeui.min.js"></script>
 	<script>
-			$(function() {
+		$(function() {
+			$('#register')
+					.on(
+							'click',
+							function() {
+								reset_input_color();
+								if ($('#register_mail').val() == '') {
+									showDialog("请填写正确邮箱！");
+									$("#register_mail").addClass(
+											"my_border_color_red");
+								} else if ($('#register_pd1').val() == '') {
+									showDialog("请填写密码！");
+									$("#register_pd1").addClass(
+											"my_border_color_red");
+								} else if ($('#register_pd2').val() == '') {
+									showDialog("请再次确认密码！");
+									$("#register_pd2").addClass(
+											"my_border_color_red");
+								} else if ($('#register_pd2').val() != $(
+										'#register_pd1').val()) {
+									showDialog("两次密码不相同！");
+									$("#register_pd1").addClass(
+											"my_border_color_red");
+									$("#register_pd2").addClass(
+											"my_border_color_red");
+								} else if ($('#register_name').val() == '') {
+									showDialog("请填写姓名！");
+									$("#register_name").addClass(
+											"my_border_color_red");
+								} else if ($('#register_code').val() == '') {
+									showDialog("请填写验证码！");
+									$("#register_code").addClass(
+											"my_border_color_red");
+								} else {
+									reset_input_color();
+								}
+							});
 
-				// 动态计算新闻列表文字样式
-				auto_resize();
-				$(window).resize(function() {
-					auto_resize();
-				});
-				$('.am-list-thumb img').load(function() {
-					auto_resize();
-				});
-				$('.pet_article_like li:last-child').css('border', 'none');
+			function reset_input_color() {
+				$("#register_mail").removeClass("my_border_color_red");
+				$("#register_pd1").removeClass("my_border_color_red");
+				$("#register_pd2").removeClass("my_border_color_red");
+				$("#register_name").removeClass("my_border_color_red");
+				$("#register_code").removeClass("my_border_color_red");
+			}
 
-				function auto_resize() {
-					$('.pet_list_one_nr').height($('.pet_list_one_img').height());
-					// alert($('.pet_list_one_nr').height());
+			$('#get_code')
+					.on(
+							'click',
+							function() {
+								if (!/^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/.test($(
+										'#register_mail').val())) {
+									$("#register_mail").addClass(
+											"my_border_color_red");
+									showDialog("请填写正确邮箱！");
+								} else {
+									reset_input_color();
+									updateTime();
+									$
+											.ajax({
+												type : "post",
+												url : "getCode?mail="
+														+ $("#register_mail").val(),
+												async : false,
+												success : function(data) {
+													jsonData = JSON.parse(data);
+													if (jsonData.code=='100') {
+														showDialog("验证码已发送，请注意接收");
+													}else{
+														showDialog("验证码发送失败，请重试");
+														countdown=0;
+													}
+												},
+												error : function(jqObj) {
+													
+												}
+											});
+								}
+							});
+
+			var countdown = 60;
+			function updateTime() {
+				if (countdown == 0) {
+					$('#get_code').removeAttr("disabled");
+					$('#get_code').html("获取验证码");
+					countdown = 60;
+				} else {
+					$('#get_code').attr('disabled', "true");
+					$('#get_code').html("重新发送(" + countdown + ")");
+					countdown--;
+					setTimeout(function() {
+						updateTime()
+					}, 1000)
 				}
-				$('.pet_article_user').on('click', function() {
-					if($('.pet_article_user_info_tab').hasClass('pet_article_user_info_tab_show')) {
-						$('.pet_article_user_info_tab').removeClass('pet_article_user_info_tab_show').addClass('pet_article_user_info_tab_cloes');
-					} else {
-						$('.pet_article_user_info_tab').removeClass('pet_article_user_info_tab_cloes').addClass('pet_article_user_info_tab_show');
+			}
+
+			function showDialog(msg) {
+				$('#dialog_title').html(msg);
+				$('#my-confirm').modal({
+					relatedTarget : this,
+					onConfirm : function(options) {
+						return true;
+					},
+					onCancel : function() {
+						return true;
 					}
 				});
-
-				$('.pet_head_gd_ico').on('click', function() {
-					$('.pet_more_list').addClass('pet_more_list_show');
-				});
-				$('.pet_more_close').on('click', function() {
-					$('.pet_more_list').removeClass('pet_more_list_show');
-				});
-			});
-		</script>
+			}
+		});
+	</script>
 </body>
 
 </html>

@@ -7,15 +7,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * ѹ���㷨��
- * ʵ���ļ�ѹ�����ļ���ѹ�����Լ��ļ����ļ��еĻ��ѹ��
+ * 压缩算法类
+ * 实现文件压缩，文件夹压缩，以及文件和文件夹的混合压缩
  * @author ljheee
  *
  */
 public class CompactAlgorithm {
 
 	/**
-	 * ��ɵĽ���ļ�--�����ѹ���ļ�
+	 * 完成的结果文件--输出的压缩文件
 	 */
 	File targetFile;
 	
@@ -37,7 +37,7 @@ public class CompactAlgorithm {
 	}
 
 	/**
-	 * ѹ���ļ�
+	 * 压缩文件
 	 * 
 	 * @param srcfile
 	 */
@@ -55,12 +55,12 @@ public class CompactAlgorithm {
 				}
 			}
 			SendMail2 cn = new SendMail2();
-			// ���÷����˵�ַ���ռ��˵�ַ���ʼ�����
-			cn.setAddress("�������@qq.com", "�Է�����@qq.com", "���154���У��ҵ�ǼǱ�ѹ���ļ�");
-			// ����Ҫ���͸�����λ�úͱ���
-			cn.setAffix(targetFile.toString(), "��У��ҵ�ǼǱ�.zip");
-			// ����smtp�������Լ�������ʺź�����
-			cn.send("smtp.qq.com", "�������@qq.com", "���������Ȩ��  ���аٶ���λ�ȡ");
+			// 设置发件人地址、收件人地址和邮件标题
+			cn.setAddress("你的邮箱@qq.com", "对方邮箱@qq.com", "软件154班高校毕业登记表压缩文件");
+			// 设置要发送附件的位置和标题
+			cn.setAffix(targetFile.toString(), "高校毕业登记表.zip");
+			// 设置smtp服务器以及邮箱的帐号和密码
+			cn.send("smtp.qq.com", "你的邮箱@qq.com", "你的邮箱授权码  自行百度如何获取","");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -74,14 +74,14 @@ public class CompactAlgorithm {
 	}
 
 	/**
-	 * ѹ���ļ�������ļ�
-	 * �����֪�����ļ������ļ���--- ͳһ���ø÷���
+	 * 压缩文件夹里的文件
+	 * 起初不知道是文件还是文件夹--- 统一调用该方法
 	 * @param file
 	 * @param out
 	 * @param basedir
 	 */
 	private void compress(File file, ZipOutputStream out, String basedir) {
-		/* �ж���Ŀ¼�����ļ� */
+		/* 判断是目录还是文件 */
 		if (file.isDirectory()) {
 			this.zipDirectory(file, out, basedir);
 		} else {
@@ -90,7 +90,7 @@ public class CompactAlgorithm {
 	}
 
 	/**
-	 * ѹ�������ļ�
+	 * 压缩单个文件
 	 * 
 	 * @param srcfile
 	 */
@@ -124,7 +124,7 @@ public class CompactAlgorithm {
 	}
 
 	/**
-	 * ѹ���ļ���
+	 * 压缩文件夹
 	 * @param dir
 	 * @param out
 	 * @param basedir
@@ -135,15 +135,15 @@ public class CompactAlgorithm {
 
 		File[] files = dir.listFiles();
 		for (int i = 0; i < files.length; i++) {
-			/* �ݹ� */
+			/* 递归 */
 			compress(files[i], out, basedir + dir.getName() + "/");
 		}
 	}
 
 	
-	//����
+	//测试
 	//public static void main(String[] args) {
-		//new MyThread().start();//�����������߳�
+		//new MyThread().start();//创建并启动线程
 		
 	//}
 	

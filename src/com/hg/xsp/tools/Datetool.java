@@ -8,14 +8,14 @@ import java.util.Date;
 
 public class Datetool {
 	/**
-	 * ������Ӽ�����
+	 * 日期相加减天数
 	 * 
 	 * @param date
-	 *            ���ΪNull����Ϊ��ǰʱ��
+	 *            如果为Null，则为当前时间
 	 * @param days
-	 *            �Ӽ�����
+	 *            加减天数
 	 * @param includeTime
-	 *            �Ƿ����ʱ����,true��ʾ����
+	 *            是否包括时分秒,true表示包含
 	 * @return
 	 * @throws ParseException
 	 */
@@ -67,7 +67,7 @@ public class Datetool {
 	}
 
 	/**
-	 * ͨ��Date���ȡ
+	 * 通过Date类获取
 	 */
 	public static String getTimeNowThroughDate() {
 		Date date = new Date();
@@ -92,12 +92,12 @@ public class Datetool {
 	
 
 	/**
-	 * ��ȡ�������ڼ������
+	 * 获取两个日期间隔分钟
 	 * 
 	 * @return
 	 */
 	public static long getMinOfDateToDate(String date) {
-		// ���մ���ĸ�ʽ����һ��simpledateformate����
+		// 按照传入的格式生成一个simpledateformate对象
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String timeStr1 = sdf.format(new Date());;
@@ -112,8 +112,8 @@ public class Datetool {
 	
 
 	/**
-	 * ȡ������ʱ��ε�ʱ���� return t2 ��t1�ļ������ throws ParseException
-	 * �����������ڸ�ʽ����0000-00-00 ��ʽ�׳��쳣
+	 * 取得两个时间段的时间间隔 return t2 与t1的间隔天数 throws ParseException
+	 * 如果输入的日期格式不是0000-00-00 格式抛出异常
 	 */
 	public static int getBetweenDays(String t1, String t2) throws ParseException {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -124,7 +124,7 @@ public class Datetool {
 		Calendar c2 = Calendar.getInstance();
 		c1.setTime(d1);
 		c2.setTime(d2);
-		// ��֤�ڶ���ʱ��һ�����ڵ�һ��ʱ��
+		// 保证第二个时间一定大于第一个时间
 		if (c1.after(c2)) {
 			c1 = c2;
 			c2.setTime(d1);
