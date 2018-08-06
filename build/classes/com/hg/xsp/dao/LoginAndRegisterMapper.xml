@@ -11,7 +11,7 @@
 	</select>
 
 
-	<select id="isHaveUser" parameterType="com.hg.xsp.entity.User">
+	<select id="isHaveUser" parameterType="com.hg.xsp.entity.User" resultType="com.hg.xsp.entity.User">
 		select * from
 		user
 		where

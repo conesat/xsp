@@ -16,7 +16,9 @@ public class LoginAndRegisterServicesImpl implements LoginAndRegisterServices{
 	
 	@Override
 	public boolean isHaveUser(User user) {
-		// TODO Auto-generated method stub
+		if (loginAndRegisterMapper.isHaveUser(user)!=null) {
+			return true;
+		}
 		return false;
 	}
 
@@ -29,7 +31,7 @@ public class LoginAndRegisterServicesImpl implements LoginAndRegisterServices{
 	@Override
 	public int register(User user) {
 		int re=100;
-		if (loginAndRegisterMapper.isHaveUser(user)) {
+		if (isHaveUser(user)) {
 			re=101;
 		}else{
 			try {

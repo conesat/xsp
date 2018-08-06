@@ -84,18 +84,19 @@
 
 					</div>
 					<div data-tab-panel-1 class="am-tab-panel ">
-						<form class="am-form am-form-horizontal" action="javascript:;">
+						<form class="am-form am-form-horizontal" action="javascript:;"
+							id="register_form">
 							<div class="am-form-group">
 								<div class="am-u-sm-12">
-									<input type="email" class="am-radius" id="register_mail"
-										placeholder="输入你的电子邮件">
+									<input type="email" class="am-radius" name="mail"
+										id="register_mail" placeholder="输入你的电子邮件">
 								</div>
 							</div>
 
 							<div class="am-form-group">
 								<div class="am-u-sm-12">
-									<input type="password" class="am-radius" id="register_pd1"
-										placeholder="输入密码">
+									<input type="password" class="am-radius" name='password'
+										id="register_pd1" placeholder="输入密码">
 								</div>
 							</div>
 
@@ -108,15 +109,15 @@
 
 							<div class="am-form-group">
 								<div class="am-u-sm-12">
-									<input type="text" class="am-radius" id="register_name"
-										placeholder="输入姓名">
+									<input type="text" class="am-radius" name='name'
+										id="register_name" placeholder="输入姓名">
 								</div>
 							</div>
 
 							<div class="am-form-group">
 								<div class="am-u-sm-6">
-									<input type="text" class="am-radius" id="register_code"
-										placeholder="输入验证码">
+									<input type="text" class="am-radius" name='code'
+										id="register_code" placeholder="输入验证码">
 								</div>
 								<div class="am-u-sm-6">
 									<button id="get_code"
@@ -195,6 +196,28 @@
 											"my_border_color_red");
 								} else {
 									reset_input_color();
+									$.ajax({
+										type : "post",
+										url : "registerUser?"
+												+ $("#register_form")
+														.serialize(),
+										async : false,
+										success : function(data) {
+											jsonData = JSON.parse(data);
+											if (jsonData.code == '100') {
+												showDialog("注册成功，请登录");
+											} else if (jsonData.code == '101'){
+												showDialog("用户名已存在");
+											}else if (jsonData.code == '200'){
+												showDialog("验证码错误");
+											}else if (jsonData.code == '102'){
+												showDialog("注册失败");
+											}
+										},
+										error : function(jqObj) {
+
+										}
+									});
 								}
 							});
 
@@ -218,25 +241,24 @@
 								} else {
 									reset_input_color();
 									updateTime();
-									$
-											.ajax({
-												type : "post",
-												url : "getCode?mail="
-														+ $("#register_mail").val(),
-												async : false,
-												success : function(data) {
-													jsonData = JSON.parse(data);
-													if (jsonData.code=='100') {
-														showDialog("验证码已发送，请注意接收");
-													}else{
-														showDialog("验证码发送失败，请重试");
-														countdown=0;
-													}
-												},
-												error : function(jqObj) {
-													
-												}
-											});
+									$.ajax({
+										type : "post",
+										url : "getCode?mail="
+												+ $("#register_mail").val(),
+										async : false,
+										success : function(data) {
+											jsonData = JSON.parse(data);
+											if (jsonData.code == '100') {
+												showDialog("验证码已发送，请注意接收");
+											} else {
+												showDialog("验证码发送失败，请重试");
+												countdown = 0;
+											}
+										},
+										error : function(jqObj) {
+
+										}
+									});
 								}
 							});
 

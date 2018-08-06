@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.hg.xsp.entity.User;
 import com.hg.xsp.services.LoginAndRegisterServices;
 import com.hg.xsp.tools.SendMail;
-import com.hg.xsp.tools.SendMail2;
 
 import net.sf.json.JSONObject;
 
@@ -30,27 +29,34 @@ public class LoginAndRegisterController {
 	}
 
 	@RequestMapping(value = "registerUser", method = RequestMethod.POST)
-	public void registerUser(HttpServletRequest request, Model model, User user, HttpServletResponse response) {
+	public void registerUser(HttpServletRequest request, Model model, User user, HttpServletResponse response,
+			String code) {
 		JSONObject json = new JSONObject();
-		json.put("code", loginAndRegisterServices.register(user));
+		System.out.println(user.toString()+"  code:"+code);
+		int re = 100;
+		if (request.getSession().getAttribute("code").equals(code)) {
+			re = loginAndRegisterServices.register(user);
+		} else {
+			re = 200;
+		}
+		json.put("code", re);
 		try {
 			response.getWriter().print(json);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	@RequestMapping(value = "getCode", method = RequestMethod.POST)
-	public void getCode(HttpServletRequest request, Model model, User user, HttpServletResponse response,String mail) {
+	public void getCode(HttpServletRequest request, Model model, User user, HttpServletResponse response, String mail) {
 		JSONObject json = new JSONObject();
-		String code="";
-		for(int i=0;i<4;i++){
-			code+=Integer.toString((int)(Math.random()*10));
+		String code = "";
+		for (int i = 0; i < 4; i++) {
+			code += Integer.toString((int) (Math.random() * 10));
 		}
-		System.out.println("code："+code+" email:"+mail);
+		System.out.println("code：" + code + " email:" + mail);
 		try {
-			SendMail.sendMail(mail, "您使用此邮箱注册学生派，验证码为"+code+"  如非本人操作，请忽略此邮件");
+			SendMail.sendMail(mail, "您使用此邮箱注册学生派，验证码为" + code + "  如非本人操作，请忽略此邮件");
 			request.getSession().setAttribute("code", code);
 			json.put("code", 100);
 		} catch (Exception e1) {
