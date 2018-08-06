@@ -23,7 +23,7 @@ public class LoginAndRegisterServicesImpl implements LoginAndRegisterServices{
 	}
 
 	@Override
-	public User login(User user) {
+	public User verifyLogin(User user) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -24,8 +24,22 @@ public class LoginAndRegisterController {
 	private LoginAndRegisterServices loginAndRegisterServices;
 
 	@RequestMapping(value = "verifyLogin", method = RequestMethod.POST)
-	public String verifyLogin(HttpServletRequest request, Model model, User user) {
-		return "login";
+	public void verifyLogin(HttpServletRequest request, Model model, User user,HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		int re = 100;
+		if (loginAndRegisterServices.isHaveUser(user)) {
+			if (loginAndRegisterServices.verifyLogin(user)==null) {
+				re=101;
+			}
+		}else {
+			re=102;
+		}
+		json.put("code", re);
+		try {
+			response.getWriter().print(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@RequestMapping(value = "registerUser", method = RequestMethod.POST)
