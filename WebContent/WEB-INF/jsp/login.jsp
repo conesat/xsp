@@ -206,11 +206,11 @@
 											jsonData = JSON.parse(data);
 											if (jsonData.code == '100') {
 												showDialog("注册成功，请登录");
-											} else if (jsonData.code == '101'){
+											} else if (jsonData.code == '101') {
 												showDialog("用户名已存在");
-											}else if (jsonData.code == '200'){
+											} else if (jsonData.code == '200') {
 												showDialog("验证码错误");
-											}else if (jsonData.code == '102'){
+											} else if (jsonData.code == '102') {
 												showDialog("注册失败");
 											}
 										},
@@ -250,6 +250,8 @@
 											jsonData = JSON.parse(data);
 											if (jsonData.code == '100') {
 												showDialog("验证码已发送，请注意接收");
+											} else if (jsonData.code == '102') {
+												showDialog("该邮箱已被使用");
 											} else {
 												showDialog("验证码发送失败，请重试");
 												countdown = 0;

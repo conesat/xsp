@@ -32,7 +32,7 @@ public class LoginAndRegisterController {
 	public void registerUser(HttpServletRequest request, Model model, User user, HttpServletResponse response,
 			String code) {
 		JSONObject json = new JSONObject();
-		System.out.println(user.toString()+"  code:"+code);
+		System.out.println(user.toString() + "  code:" + code);
 		int re = 100;
 		if (request.getSession().getAttribute("code").equals(code)) {
 			re = loginAndRegisterServices.register(user);
@@ -51,17 +51,21 @@ public class LoginAndRegisterController {
 	public void getCode(HttpServletRequest request, Model model, User user, HttpServletResponse response, String mail) {
 		JSONObject json = new JSONObject();
 		String code = "";
-		for (int i = 0; i < 4; i++) {
-			code += Integer.toString((int) (Math.random() * 10));
-		}
-		System.out.println("code：" + code + " email:" + mail);
-		try {
-			SendMail.sendMail(mail, "您使用此邮箱注册学生派，验证码为" + code + "  如非本人操作，请忽略此邮件");
-			request.getSession().setAttribute("code", code);
-			json.put("code", 100);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			json.put("code", 101);
+		if (loginAndRegisterServices.isHaveUser(user)) {
+			code = "102";
+		} else {
+			for (int i = 0; i < 4; i++) {
+				code += Integer.toString((int) (Math.random() * 10));
+			}
+			System.out.println("code：" + code + " email:" + mail);
+			try {
+				SendMail.sendMail(mail, "您使用此邮箱注册学生派，验证码为" + code + "  如非本人操作，请忽略此邮件");
+				request.getSession().setAttribute("code", code);
+				json.put("code", 100);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				json.put("code", 101);
+			}
 		}
 		try {
 			response.getWriter().print(json);
