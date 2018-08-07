@@ -1,0 +1,49 @@
+.am-tabs {
+	margin: 20px auto;
+	display: block;
+	float: none;
+}
+
+.pet_content {
+	background-color: #ffffff;
+}
+
+.am-header .am-header-nav img {
+	height: 25px;
+}
+
+body {
+	font-size: 1.2em;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+}
+
+.am-header .am-nav li {
+	line-height: 30px;
+	height: 30px;
+	margin-top: 10px;
+}
+
+.am-nav li a {
+	line-height: 30px;
+	height: 30px;
+	text-align: center;
+	padding-top: 0;
+}
+
+ul.am-dropdown-content>li>a {
+	padding: 0;
+}
+
+.pet_article_footer_info {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.am-form .am-form-group .my_border_color_red {
+	border-color: red;
+}

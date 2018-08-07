@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hg.xsp.dao.UpdateMapper">
+	<update id="updateStudent" parameterType="com.hg.xsp.entity.Student">
+		update student set
+		open=#{open},url=#{url},state="已提交" where name=#{name} and
+		stu_id=#{stu_id};
+	</update>
+	<insert id="insertMsg" parameterType="String">
+		insert into
+		msg(msg)
+		values(#{msg});
+	</insert>
+</mapper>

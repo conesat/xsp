@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hg.xsp.dao.LoginAndRegisterMapper">
+	<select id="login" parameterType="com.hg.xsp.entity.User"
+		resultType="com.hg.xsp.entity.User">
+		select * from
+		user
+		where mail=#{mail} and
+		password=#{password};
+	</select>
+
+
+	<select id="isHaveUser" parameterType="com.hg.xsp.entity.User" resultType="com.hg.xsp.entity.User">
+		select * from
+		user
+		where
+		mail=#{mail};
+	</select>
+
+
+	<insert id="register" parameterType="com.hg.xsp.entity.User">
+		INSERT INTO `user` (name,password,mail) VALUES(#{name},#{password},#{mail});
+	</insert>
+
+</mapper>
