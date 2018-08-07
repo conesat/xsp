@@ -48,35 +48,27 @@
 				</ul>
 				<div class="am-tabs-bd">
 					<div data-tab-panel-0 class="am-tab-panel am-active">
-						<form class="am-form am-form-horizontal">
+						<form class="am-form am-form-horizontal" action="javascript:;"
+							id="login_form">
 							<div class="am-form-group">
 
 								<div class="am-u-sm-12">
-									<input type="email" class="am-radius" id="doc-ipt-3"
-										placeholder="输入你的电子邮件">
+									<input type="email" class="am-radius" name="mail"
+										id="login_mail" placeholder="输入你的电子邮件">
 								</div>
 							</div>
 
 							<div class="am-form-group">
 
 								<div class="am-u-sm-12">
-									<input type="password" class="am-radius" id="doc-ipt-pwd-2"
-										placeholder="输入密码">
+									<input type="password" class="am-radius" name="password"
+										id="login_password" placeholder="输入密码">
 								</div>
 							</div>
-
-							<div class="am-form-group">
-								<div class="am-u-sm-offset-1 am-u-sm-12">
-									<div class="checkbox">
-										<input type="checkbox"> 记住密码
-									</div>
-								</div>
-							</div>
-
 							<div class="am-form-group">
 								<div class="am-u-sm-12">
 									<button type="submit"
-										class="am-btn am-btn-primary am-btn-block">登录</button>
+										class="am-btn am-btn-primary am-btn-block" id='login'>登录</button>
 
 								</div>
 							</div>
@@ -162,6 +154,42 @@
 	<script src="js/amazeui.min.js"></script>
 	<script>
 		$(function() {
+
+			$('#login').on(
+					'click',
+					function() {
+						reset_input_color();
+						if (!/^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/.test($(
+								'#login_mail').val())) {
+							$("#login_mail").addClass("my_border_color_red");
+							showDialog("请填写正确邮箱！");
+						} else if ($('#login_password').val() == '') {
+							showDialog("请填写密码！");
+							$("#login_password")
+									.addClass("my_border_color_red");
+						} else {
+							$.ajax({
+								type : "post",
+								url : "verifyLogin?"
+										+ $("#login_form").serialize(),
+								async : false,
+								success : function(data) {
+									jsonData = JSON.parse(data);
+									if (jsonData.code == '101') {
+										showDialog("用户不存在");
+									} else if (jsonData.code == '102') {
+										showDialog("密码错误");
+									} else{
+										window.location.href='gotoIndex';
+									}
+								},
+								error : function(jqObj) {
+
+								}
+							});
+						}
+					});
+
 			$('#register')
 					.on(
 							'click',
@@ -206,11 +234,11 @@
 											jsonData = JSON.parse(data);
 											if (jsonData.code == '100') {
 												showDialog("注册成功，请登录");
-											} else if (jsonData.code == '101'){
+											} else if (jsonData.code == '101') {
 												showDialog("用户名已存在");
-											}else if (jsonData.code == '200'){
+											} else if (jsonData.code == '200') {
 												showDialog("验证码错误");
-											}else if (jsonData.code == '102'){
+											} else if (jsonData.code == '102') {
 												showDialog("注册失败");
 											}
 										},
@@ -222,6 +250,8 @@
 							});
 
 			function reset_input_color() {
+				$("#login_mail").removeClass("my_border_color_red");
+				$("#login_password").removeClass("my_border_color_red");
 				$("#register_mail").removeClass("my_border_color_red");
 				$("#register_pd1").removeClass("my_border_color_red");
 				$("#register_pd2").removeClass("my_border_color_red");
@@ -250,6 +280,8 @@
 											jsonData = JSON.parse(data);
 											if (jsonData.code == '100') {
 												showDialog("验证码已发送，请注意接收");
+											} else if (jsonData.code == '102') {
+												showDialog("该邮箱已被使用");
 											} else {
 												showDialog("验证码发送失败，请重试");
 												countdown = 0;

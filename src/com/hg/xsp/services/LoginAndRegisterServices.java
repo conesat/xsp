@@ -6,7 +6,7 @@ public interface LoginAndRegisterServices {
 	
 	public boolean isHaveUser(User user);
 
-	public User login(User user);
+	public User verifyLogin(User user);
 	
 	public int register(User user);
 }
