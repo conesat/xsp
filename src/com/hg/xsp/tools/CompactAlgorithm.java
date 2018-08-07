@@ -54,13 +54,7 @@ public class CompactAlgorithm {
 					compress(list[i], out, "");
 				}
 			}
-			SendMail2 cn = new SendMail2();
-			// 设置发件人地址、收件人地址和邮件标题
-			cn.setAddress("你的邮箱@qq.com", "对方邮箱@qq.com", "软件154班高校毕业登记表压缩文件");
-			// 设置要发送附件的位置和标题
-			cn.setAffix(targetFile.toString(), "高校毕业登记表.zip");
-			// 设置smtp服务器以及邮箱的帐号和密码
-			cn.send("smtp.qq.com", "你的邮箱@qq.com", "你的邮箱授权码  自行百度如何获取","");
+			//压缩完成
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

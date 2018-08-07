@@ -2,8 +2,6 @@ package com.hg.xsp.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.hg.xsp.dao.LoginAndOutMapper;
 import com.hg.xsp.dao.LoginAndRegisterMapper;
 import com.hg.xsp.entity.User;
 import com.hg.xsp.services.LoginAndRegisterServices;

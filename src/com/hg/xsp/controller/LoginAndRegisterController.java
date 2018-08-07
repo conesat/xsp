@@ -1,5 +1,6 @@
 package com.hg.xsp.controller;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +59,8 @@ public class LoginAndRegisterController {
 		try {
 			SendMail.sendMail(mail, "您使用此邮箱注册学生派，验证码为" + code + "  如非本人操作，请忽略此邮件");
 			request.getSession().setAttribute("code", code);
+			File file = new File("D:\\xsp\\user\\"+mail);
+			file.mkdirs();
 			json.put("code", 100);
 		} catch (Exception e1) {
 			e1.printStackTrace();

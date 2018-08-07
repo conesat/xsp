@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.hg.xsp.dao.LoginAndOutMapper;
 import com.hg.xsp.dao.SelectMapper;
 import com.hg.xsp.dao.UpdateMapper;
 import com.hg.xsp.entity.Student;
@@ -14,8 +12,7 @@ import com.hg.xsp.services.MyService;
 @Service
 public class MyServiceImpl implements MyService{
 	
-	@Autowired
-	LoginAndOutMapper loginAndOutMapper;
+	
 	
 	@Autowired
 	UpdateMapper updateMapper;
@@ -23,16 +20,7 @@ public class MyServiceImpl implements MyService{
 	@Autowired
 	SelectMapper selectMapper;
 
-	@Override
-	public Student login(Student registerAndLogin) {
-		Student registerAndLogin2=null;
-		try {
-			registerAndLogin2=loginAndOutMapper.login(registerAndLogin);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		return registerAndLogin2;
-	}
+
 
 	@Override
 	public boolean updateStudent(Student student) {
