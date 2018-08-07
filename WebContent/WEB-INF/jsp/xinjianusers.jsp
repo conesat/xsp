@@ -45,7 +45,7 @@
 
 						</ul>
 						<div class="am-u-sm-6 xinjianuser-button">
-							<button id="doc-confirm-toggle" type="button"
+							<button onclick="addUser()" type="button"
 								class="am-btn am-btn-primary am-btn-block">添加名单</button>
 						</div>
 						<div class="am-u-sm-6 xinjianuser-button">
@@ -71,6 +71,28 @@
 				<p>
 					<input type="text" class="am-form-field am-radius"
 						placeholder="输入编号[如学号]" id='add_user_id' />
+				</p>
+			</div>
+
+			<div class="am-modal-footer">
+				<span class="am-modal-btn" data-am-modal-cancel>取消</span> <span
+					class="am-modal-btn" data-am-modal-confirm>确定</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="am-modal am-modal-confirm" tabindex="-1"
+		id="my-confirm-change">
+		<div class="am-modal-dialog">
+			<div class="am-modal-hd">添加名单</div>
+			<div class="am-modal-bd">
+				<p>
+					<input type="text" class="am-form-field am-radius"
+						placeholder="输入姓名" id='change_user_name' />
+				</p>
+				<p>
+					<input type="text" class="am-form-field am-radius"
+						placeholder="输入编号[如学号]" id='change_user_id' />
 				</p>
 			</div>
 
@@ -111,30 +133,6 @@
 		var userlist = new Array();
 		$(function() {
 			$('#doc-modal-list').find('.am-icon-close').add(
-					'#doc-confirm-toggle').on('click', function() {
-				$('#my-confirm').modal({
-					relatedTarget : this,
-					onConfirm : function(options) {
-						var user = new Object();
-						for (var i = 0; i < userlist.length; i++) {
-							if ($('#add_user_id').val() == userlist[i].id) {
-								showDialog("用户编号已存在！");
-								return;
-							}
-						}
-						user.id = $('#add_user_id').val();
-						user.name = $('#add_user_name').val();
-						userlist[userlist.length] = user;
-						$('#add_user_id').val('');
-						$('#add_user_name').val('');
-						showList();
-					},
-					onCancel : function() {
-					}
-				});
-			});
-
-			$('#doc-modal-list').find('.am-icon-close').add(
 					'#doc-confirm-toggle-change').on('click', function() {
 				$('#my-confirm').modal({
 					relatedTarget : this,
@@ -145,6 +143,29 @@
 				});
 			});
 		});
+
+		function addUser() {
+			$('#my-confirm').modal({
+				relatedTarget : this,
+				onConfirm : function(options) {
+					var user = new Object();
+					for (var i = 0; i < userlist.length; i++) {
+						if ($('#add_user_id').val() == userlist[i].id) {
+							showDialog("用户编号已存在！");
+							return;
+						}
+					}
+					user.id = $('#add_user_id').val();
+					user.name = $('#add_user_name').val();
+					userlist[userlist.length] = user;
+					$('#add_user_id').val('');
+					$('#add_user_name').val('');
+					showList();
+				},
+				onCancel : function() {
+				}
+			});
+		}
 
 		function showList() {
 			$("#user_list").html("");
@@ -174,30 +195,32 @@
 		};
 
 		function change(num) {
-			var id = userlist[num].id;
-			var name = userlist[num].name;
-			$('#add_user_id').val(id);
-			$('#add_user_name').val(name);
-			$('#my-confirm').modal({
+			$('#change_user_id').val(userlist[num].id);
+			$('#change_user_name').val(userlist[num].name);
+			$('#my-confirm-change').modal({
 				relatedTarget : this,
 				onConfirm : function(options) {
-					alert(id+" "+$('#add_user_id').val());
-					if (id != $('#add_user_id').val()) {
+					alert(num);
+					var id =  userlist[num].id;
+					//alert(userlist[num].id + " " + $('#change_user_id').val());
+					if (id != $('#change_user_id').val()) {
 						for (var i = 0; i < userlist.length; i++) {
-							if ($('#add_user_id').val() == userlist[i].id) {
+							if ($('#change_user_id').val() == userlist[i].id) {
 								showDialog("用户编号已存在！");
 								return;
 							}
 						}
 					}
-					userlist[num].id = $('#add_user_id').val();
-					userlist[num].name = $('#add_user_name').val();
+					userlist[num].id = $('#change_user_id').val();
+					userlist[num].name = $('#change_user_name').val();
 					showList();
 				},
 				onCancel : function() {
 				}
 			});
 		};
+		
+		
 
 		function showDialog(msg) {
 			$('#dialog_title').html(msg);
