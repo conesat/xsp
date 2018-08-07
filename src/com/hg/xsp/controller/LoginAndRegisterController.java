@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Null;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,8 +26,25 @@ public class LoginAndRegisterController {
 	private LoginAndRegisterServices loginAndRegisterServices;
 
 	@RequestMapping(value = "verifyLogin", method = RequestMethod.POST)
-	public String verifyLogin(HttpServletRequest request, Model model, User user) {
-		return "login";
+	public void verifyLogin(HttpServletRequest request, Model model, User user,HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		User user2=null;
+		int re = 100;
+		if (loginAndRegisterServices.isHaveUser(user)) {
+			if ((user2=loginAndRegisterServices.verifyLogin(user))==null) {
+				re=102;
+			}else{
+				request.getSession().setAttribute("user", user2);
+			}
+		}else {
+			re=101;
+		}
+		json.put("code", re);
+		try {
+			response.getWriter().print(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@RequestMapping(value = "registerUser", method = RequestMethod.POST)
@@ -71,5 +89,11 @@ public class LoginAndRegisterController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@RequestMapping(value = "loginOut", method = RequestMethod.GET)
+	public String loginOut(HttpServletRequest request, Model model, User user,HttpServletResponse response) {
+		request.getSession().removeAttribute("user");
+		return "login";
 	}
 }

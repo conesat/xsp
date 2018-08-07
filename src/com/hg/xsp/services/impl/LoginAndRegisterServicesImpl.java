@@ -37,8 +37,13 @@ public class LoginAndRegisterServicesImpl implements LoginAndRegisterServices{
 
 	@Override
 	public User verifyLogin(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		User re=null;
+		try {
+			re=loginAndRegisterMapper.login(user);
+		} catch (Exception e) {
+			
+		}
+		return re;
 	}
 
 }

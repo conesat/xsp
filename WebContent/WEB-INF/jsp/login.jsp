@@ -154,7 +154,7 @@
 	<script src="js/amazeui.min.js"></script>
 	<script>
 		$(function() {
-
+			
 			$('#login').on(
 					'click',
 					function() {
@@ -219,6 +219,7 @@
 									$("#register_name").addClass(
 											"my_border_color_red");
 								} else if ($('#register_code').val() == '') {
+									
 									showDialog("请填写验证码！");
 									$("#register_code").addClass(
 											"my_border_color_red");
@@ -234,6 +235,7 @@
 											jsonData = JSON.parse(data);
 											if (jsonData.code == '100') {
 												showDialog("注册成功，请登录");
+												window.location.reload();
 											} else if (jsonData.code == '101') {
 												showDialog("用户名已存在");
 											} else if (jsonData.code == '200') {

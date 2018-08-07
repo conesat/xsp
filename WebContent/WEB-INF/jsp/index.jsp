@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
@@ -28,7 +29,7 @@
 				class="am-header am-header-default pet_head_block">
 			<div class="pet_news_list_tag_name">学生派</div>
 			<div class="am-header-right am-header-nav ">
-				<a href="gotoLogin" class="am-icon-user">登录|注册</a>
+				<a class="am-icon-user" id='user_name'>登录|注册</a>
 			</div>
 			</header>
 		</div>
@@ -57,7 +58,8 @@
 		<div class="pet_circle_nav">
 
 			<ul class="pet_circle_nav_list">
-				<li><a href="gotoShouji" class="  pet_nav_xinxianshi icon-fabu"></a><span>收集</span></li>
+				<li><a onclick="gotoUrl('gotoShouji')"
+					class="pet_nav_xinxianshi icon-fabu"></a><span>收集</span></li>
 				<li><a id="doc-confirm-toggle"
 					class="pet_nav_zhangzhishi icon-tijiao"></a><span>提交</span></li>
 				<li><a href="" class="  pet_nav_kantuya icon-xinwen"></a><span>新闻</span></li>
@@ -70,7 +72,8 @@
 				<p class="my_blockquote">软件开发学习资料</p>
 			</blockquote>
 			<ul class="pet_circle_nav_list">
-				<li><a href="gotoShouji" class="  pet_nav_xinxianshi icon-anzhuo"></a><span>安卓</span></li>
+				<li><a href="gotoShouji"
+					class="  pet_nav_xinxianshi icon-anzhuo"></a><span>安卓</span></li>
 				<li><a id="doc-confirm-toggle"
 					class="pet_nav_zhangzhishi icon-java"></a><span>java</span></li>
 				<li><a href="" class="  pet_nav_kantuya icon-java_web"></a><span>jee</span></li>
@@ -82,7 +85,8 @@
 				<p class="my_blockquote">帮助我们</p>
 			</blockquote>
 			<ul class="pet_circle_nav_list">
-				<li><a href="gotoShouji" class="  pet_nav_xinxianshi icon-renminbi"></a><span>捐助作者</span></li>
+				<li><a href="gotoShouji"
+					class="  pet_nav_xinxianshi icon-renminbi"></a><span>捐助作者</span></li>
 				<li><a id="doc-confirm-toggle"
 					class="pet_nav_zhangzhishi icon-jiaruwomen"></a><span>加入我们</span></li>
 				<li><a href="" class="  pet_nav_kantuya icon-lianxiwomen"></a><span>联系我们</span></li>
@@ -159,53 +163,93 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm2">
+		<div class="am-modal-dialog">
+			<div class="am-modal-hd">提示</div>
+			<div class="am-modal-bd">
+				<p>要退出登录码？</p>
+			</div>
+			<div class="am-modal-footer">
+				<span class="am-modal-btn" data-am-modal-cancel>取消</span> <span
+					class="am-modal-btn" data-am-modal-confirm>确定</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm3">
+		<div class="am-modal-dialog">
+			<div class="am-modal-hd">提示</div>
+			<div class="am-modal-bd" id="dialog_title"></div>
+			<div class="am-modal-footer">
+				<span class="am-modal-btn" data-am-modal-confirm>确定</span>
+			</div>
+		</div>
+	</div>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/amazeui.min.js"></script>
 	<script>
-				$(function() {
+		var user_name = '${user.name}';
+		var msg = '${msg}';
 
-					// 动态计算新闻列表文字样式
-					auto_resize();
-					$(window).resize(function() {
-						auto_resize();
+		function gotoUrl(url) {
+			if (user_name == '') {
+				showDialog("请先登录！");
+			} else {
+				window.location.href = url;
+			}
+		}
+
+		$(function() {
+			if (msg != '') {
+				showDialog(msg);
+			}
+			if (user_name != '') {
+				$('#user_name').html(user_name);
+			}
+			$('#user_name').on('click', function() {
+				if (user_name != '') {
+					$('#my-confirm2').modal({
+						relatedTarget : this,
+						onConfirm : function(options) {
+							window.location.href = "loginOut";
+						},
+						onCancel : function() {
+							return false;
+						}
 					});
-					$('.am-list-thumb img').load(function() {
-						auto_resize();
-					});
 
-					$('.am-list > li:last-child').css('border', 'none');
-
-					function auto_resize() {
-						$('.pet_list_one_nr').height($('.pet_list_one_img').height());
+				} else {
+					window.location.href = "gotoLogin";
+				}
+			});
+			$('#doc-modal-list').find('.am-icon-close').add(
+					'#doc-confirm-toggle').on('click', function() {
+				$('#my-confirm').modal({
+					relatedTarget : this,
+					onConfirm : function(options) {
+						window.location.href = "gotoShoujiye";
+					},
+					onCancel : function() {
 
 					}
-					$('.pet_nav_gengduo').on('click', function() {
-						$('.pet_more_list').addClass('pet_more_list_show');
-					});
-					$('.pet_more_close').on('click', function() {
-						$('.pet_more_list').removeClass('pet_more_list_show');
-					});
-
-					$('#doc-modal-list').find('.am-icon-close').add('#doc-confirm-toggle').
-					on('click', function() {
-						$('#my-confirm').modal({
-							relatedTarget: this,
-							onConfirm: function(options) {
-								window.location.href="gotoShoujiye";
-								/*var $link = $(this.relatedTarget).prev('a');
-								var msg = $link.length ? '你要删除的链接 ID 为 ' + $link.data('id') :
-									'确定了，但不知道要整哪样';
-								alert(msg);*/
-							},
-							// closeOnConfirm: false,
-							onCancel: function() {
-								//alert('算求，不弄了');
-							}
-						});
-					});
-					
 				});
-			</script>
+			});
+
+		});
+		function showDialog(msg) {
+			$('#dialog_title').html(msg);
+			$('#my-confirm3').modal({
+				relatedTarget : this,
+				onConfirm : function(options) {
+					return true;
+				},
+				onCancel : function() {
+					return true;
+				}
+			});
+		}
+	</script>
 </body>
 
 </html>

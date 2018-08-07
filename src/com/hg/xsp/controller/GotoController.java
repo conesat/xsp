@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hg.xsp.entity.Student;
+import com.hg.xsp.entity.Task;
+import com.hg.xsp.entity.User;
 import com.hg.xsp.services.MyService;
 import com.hg.xsp.tools.MyThread;
 import com.hg.xsp.tools.XmlTool;
@@ -36,17 +39,6 @@ public class GotoController {
 	public String gotomainpage(HttpServletRequest request) {
 		return "upload";
 	}
-
-	/*
-	 * @RequestMapping(value = "gotoIndex", method = RequestMethod.GET) public
-	 * String gotoIndex(HttpServletRequest request, Model model) { List<Student>
-	 * listno = myService.selectStudentNo(); List<Student> listyes =
-	 * myService.selectStudentYes(); XmlTool.createXml();
-	 * model.addAttribute("listno", listno); model.addAttribute("listyes",
-	 * listyes); model.addAttribute("numno", listno.size());
-	 * model.addAttribute("numyes", listyes.size()); if (myThread==null) {
-	 * myThread=new MyThread(); myThread.start(); } return "index"; }
-	 */
 
 	@RequestMapping(value = "XLH", method = RequestMethod.GET)
 	public String XLH(HttpServletRequest request, Model model) {
@@ -171,7 +163,7 @@ public class GotoController {
 	}
 
 	/**
-	 * �·���
+	 * 新
 	 */
 	@RequestMapping(value = "gotoLogin", method = RequestMethod.GET)
 	public String gotoLogin(HttpServletRequest request, Model model) {
@@ -180,12 +172,28 @@ public class GotoController {
 
 	@RequestMapping(value = "gotoIndex", method = RequestMethod.GET)
 	public String gotoIndex(HttpServletRequest request, Model model) {
+		User user = (User) request.getSession().getAttribute("user");
+		if (user != null) {
+			model.addAttribute("user", user);
+		}
+		model.addAttribute("msg", "");
 		return "index";
 	}
 
 	@RequestMapping(value = "gotoShouji", method = RequestMethod.GET)
 	public String gotoShouji(HttpServletRequest request, Model model) {
-		return "shouji";
+		User user=(User)request.getSession().getAttribute("user");
+		if (user!=null) {
+			List<Task> list=new ArrayList<>();
+			list=XmlTool.getTasks(user.getMail());
+			model.addAttribute("msg", "");
+			model.addAttribute("tasks", list);
+			System.out.println(list.toString());
+			return "shouji";
+		}else {
+			model.addAttribute("msg", "请先登录!");
+			return "index";
+		}
 	}
 
 	@RequestMapping(value = "gotoXinjianshouji", method = RequestMethod.GET)
@@ -207,11 +215,11 @@ public class GotoController {
 	public String gotoShoujixiangxi(HttpServletRequest request, Model model) {
 		return "shoujixiangxi";
 	}
-	
+
 	@RequestMapping(value = "gotoXinjianusers", method = RequestMethod.GET)
 	public String gotoXinjianusers(HttpServletRequest request, Model model) {
 		return "xinjianusers";
 	}
-	
+
 
 }

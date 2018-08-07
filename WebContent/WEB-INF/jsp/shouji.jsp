@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
@@ -48,55 +49,25 @@
 								class="am-list-news am-list-news-default am-no-layout">
 								<div class="am-list-news-bd">
 									<ul class="am-list">
-										<!--缩略图在标题右边-->
-										<li
-											class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-right pet_hd_list">
-											<div class="am-u-sm-10">
-												<a href="gotoShoujixiangxi" class="pet_hd_block">
-													<div class="pet_hd_block_title">标题</div>
-													<div class="pet_hd_block_map">内容</div>
-													<div class="pet_hd_block_tag">
-														<span class="hd_tag_jh">收集中</span> 10月20日 09:30 -
-														10月22日16:00
-													</div>
-												</a>
-											</div>
-											<div class="am-u-sm-2" align="right">
-												<a onclick="ewm('222')" class="am-icon-btn am-icon-qrcode"></a>
-											</div>
-										</li>
-										<li
-											class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-right pet_hd_list">
-											<div class="am-u-sm-10">
-												<a href="gotoShoujixiangxi" class="pet_hd_block">
-													<div class="pet_hd_block_title">标题</div>
-													<div class="pet_hd_block_map">内容</div>
-													<div class="pet_hd_block_tag">
-														<span>收集完成</span> 10月20日 09:30 - 10月22日16:00
-													</div>
-												</a>
-											</div>
-											<div class="am-u-sm-2" align="right">
-												<a href="##" class="am-icon-btn am-icon-qrcode"></a>
-											</div>
-										</li>
+										<c:forEach items="${tasks}" var="task" varStatus="status">
+											<li
+												class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-right pet_hd_list">
+												<div class="am-u-sm-10">
+													<a href="gotoShoujixiangxi" class="pet_hd_block">
+														<div class="pet_hd_block_title">${task.title}</div>
+														<div class="pet_hd_block_map">${task.content}</div>
+														<div class="pet_hd_block_tag">
+															<span class="hd_tag_jh">${task.state}</span> ${task.begin} -
+															${task.end}
+														</div>
+													</a>
+												</div>
+												<div class="am-u-sm-2" align="right">
+													<a onclick="ewm('222')" class="am-icon-btn am-icon-qrcode"></a>
+												</div>
+											</li>
+										</c:forEach>
 
-										<li
-											class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-right pet_hd_list">
-											<div class="am-u-sm-10">
-												<a href="gotoShoujixiangxi" class="pet_hd_block">
-													<div class="pet_hd_block_title">标题</div>
-													<div class="pet_hd_block_map">内容</div>
-													<div class="pet_hd_block_tag">
-														<span class="hd_tag_js">已截止</span> 10月20日 09:30 -
-														10月22日16:00
-													</div>
-												</a>
-											</div>
-											<div class="am-u-sm-2" align="right">
-												<a href="##" class="am-icon-btn am-icon-qrcode"></a>
-											</div>
-										</li>
 									</ul>
 								</div>
 							</div>
@@ -106,7 +77,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm1" >
+	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm1">
 		<div class="am-modal-dialog">
 			<div id="cz-name" class="am-modal-hd">扫码提交</div>
 			<div class="am-modal-bd">
