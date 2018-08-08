@@ -155,9 +155,6 @@ public class XmlTool {
 
 	// 新增收集群组
 	public static void addName(String mail, String filename, NameList nameList) throws Exception {
-
-		System.out.println(mail + "   " + nameList.toString());
-
 		// 创建文件工厂实例
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setIgnoringElementContentWhitespace(false);
@@ -166,27 +163,21 @@ public class XmlTool {
 		Document xmldoc = db.parse(PATH + mail + "\\namelist\\" + filename + ".xml");
 		// 获取根节点
 		Element root = xmldoc.getDocumentElement();
-
-		Element taskNode = xmldoc.createElement("user");
-		taskNode.setAttribute("name", nameList.getName());
 		for (int i = 0; i < nameList.getNames().size(); i++) {
+			Element taskNode = xmldoc.createElement("user");
 			Element id = xmldoc.createElement("id");
 			id.setTextContent(nameList.getNames().get(i).getId());
 			taskNode.appendChild(id);
-
 			Element name = xmldoc.createElement("name");
 			name.setTextContent(nameList.getNames().get(i).getName());
 			taskNode.appendChild(name);
+			root.appendChild(taskNode);
 		}
-
-		// 把son添加到根节点中
-		root.appendChild(taskNode);
 		// 保存
 		TransformerFactory factory = TransformerFactory.newInstance();
 		Transformer former = factory.newTransformer();
 		former.transform(new DOMSource(xmldoc),
 				new StreamResult(new File(PATH + mail + "\\namelist\\" + filename + ".xml")));
-
 	}
 
 	public static List<Name> getNameList(String mail, String filename) {

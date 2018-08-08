@@ -134,9 +134,17 @@
 	<script src="js/amazeui.min.js"></script>
 	<script type="text/javascript">
 		var userlist = new Array();
+		var change='${name}';
 		$(function() {
 			var names='${names}';
-			console.log(names);
+			var jsonData = JSON.parse(names);
+			for (x in jsonData) {
+				var user = new Object();
+				user.id = jsonData[x].id;
+				user.name = jsonData[x].name;
+				userlist[userlist.length] = user;
+			}
+			showList();
 		});
 		$('#add_user_finish')
 				.on(
@@ -158,7 +166,7 @@
 													+ $("#add_user_list_name")
 															.val()
 													+ "&userlist="
-													+ JSON.stringify(userlist),
+													+ JSON.stringify(userlist)+"&change="+change,
 											async : false,
 											success : function(data) {
 												jsonData = JSON.parse(data);
