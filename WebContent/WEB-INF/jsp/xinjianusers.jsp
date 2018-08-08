@@ -31,8 +31,8 @@
 
 		<div class="pet_circle_nav" align="center">
 			<p>
-				<input type="text" class="am-form-field am-radius"
-					placeholder="输入分组名称" />
+				<input type="text" id='add_user_list_name'
+					class="am-form-field am-radius" placeholder="输入分组名称" />
 			</p>
 		</div>
 
@@ -49,7 +49,8 @@
 								class="am-btn am-btn-primary am-btn-block">添加名单</button>
 						</div>
 						<div class="am-u-sm-6 xinjianuser-button">
-							<button type="button" class="am-btn am-btn-success am-btn-block">完成</button>
+							<button type="button" id="add_user_finish"
+								class="am-btn am-btn-success am-btn-block">完成</button>
 						</div>
 
 					</div>
@@ -103,7 +104,8 @@
 		</div>
 	</div>
 
-	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm1">
+	<div class="am-modal am-modal-confirm" tabindex="-1"
+		id="my-confirm-shanchu">
 		<div class="am-modal-dialog">
 			<div id="cz-name" class="am-modal-hd"></div>
 			<div class="am-modal-bd">
@@ -131,36 +133,67 @@
 	<script src="js/amazeui.min.js"></script>
 	<script type="text/javascript">
 		var userlist = new Array();
-		$(function() {
-			$('#doc-modal-list').find('.am-icon-close').add(
-					'#doc-confirm-toggle-change').on('click', function() {
-				$('#my-confirm').modal({
-					relatedTarget : this,
-					onConfirm : function(options) {
-					},
-					onCancel : function() {
-					}
-				});
-			});
-		});
+
+		$('#add_user_finish')
+				.on(
+						'click',
+						function() {
+							$("#add_user_list_name").removeClass(
+									"my_border_color_red");
+							if ($('#add_user_list_name').val() == '') {
+								$("#add_user_list_name").addClass(
+										"my_border_color_red");
+								showDialog("请填输入群组名！");
+							} else if (userlist.length == 0) {
+								showDialog("拒绝空的群组！");
+							} else {
+								$.ajax({
+									type : "post",
+									url : "addUserList?name="
+											+ $("#add_user_name").val()
+											+ "&userlist="
+											+ JSON.stringify(userlist),
+									async : false,
+									success : function(data) {
+										jsonData = JSON.parse(data);
+										if (jsonData.code == '101') {
+											showDialog("用户不存在");
+										} else if (jsonData.code == '102') {
+											showDialog("密码错误");
+										} else {
+											window.location.href = 'gotoIndex';
+										}
+									},
+									error : function(jqObj) {
+
+									}
+								});
+							}
+						});
 
 		function addUser() {
 			$('#my-confirm').modal({
 				relatedTarget : this,
 				onConfirm : function(options) {
-					var user = new Object();
-					for (var i = 0; i < userlist.length; i++) {
-						if ($('#add_user_id').val() == userlist[i].id) {
-							showDialog("用户编号已存在！");
-							return;
+					if ($('#add_user_id').val() == '') {
+						showDialog("用户编号不能为空！");
+					} else if ($('#add_user_name').val()) {
+						showDialog("用户姓名不能为空！");
+					} else {
+						var user = new Object();
+						for (var i = 0; i < userlist.length; i++) {
+							if ($('#add_user_id').val() == userlist[i].id) {
+								showDialog("用户编号已存在！");
+								return;
+							}
 						}
+						user.id = $('#add_user_id').val();
+						user.name = $('#add_user_name').val();
+						userlist[userlist.length] = user;
+						$('#add_user_id').val('');
+						$('#add_user_name').val('');
+						showList();
 					}
-					user.id = $('#add_user_id').val();
-					user.name = $('#add_user_name').val();
-					userlist[userlist.length] = user;
-					$('#add_user_id').val('');
-					$('#add_user_name').val('');
-					showList();
 				},
 				onCancel : function() {
 				}
@@ -182,11 +215,16 @@
 		}
 
 		function shanchu(num) {
+			var ren = true;
 			$("#cz-name").html("删除编号：" + userlist[num].id);
-			$('#my-confirm1').modal({
+			$('#my-confirm-shanchu').modal({
 				relatedTarget : this,
 				onConfirm : function(options) {
-					userlist.splice(num, 1);
+					if (ren) {
+						ren = false;
+						userlist.splice(num, 1);
+						console.log(num);
+					}
 					showList();
 				},
 				onCancel : function() {
@@ -195,32 +233,45 @@
 		};
 
 		function change(num) {
+			var ren = true;
 			$('#change_user_id').val(userlist[num].id);
 			$('#change_user_name').val(userlist[num].name);
-			$('#my-confirm-change').modal({
-				relatedTarget : this,
-				onConfirm : function(options) {
-					alert(num);
-					var id =  userlist[num].id;
-					//alert(userlist[num].id + " " + $('#change_user_id').val());
-					if (id != $('#change_user_id').val()) {
-						for (var i = 0; i < userlist.length; i++) {
-							if ($('#change_user_id').val() == userlist[i].id) {
-								showDialog("用户编号已存在！");
-								return;
-							}
-						}
-					}
-					userlist[num].id = $('#change_user_id').val();
-					userlist[num].name = $('#change_user_name').val();
-					showList();
-				},
-				onCancel : function() {
-				}
-			});
+			$('#my-confirm-change')
+					.modal(
+							{
+								relatedTarget : this,
+								onConfirm : function(options) {
+									if (ren) {
+										ren = false;
+										var id = userlist[num].id;
+										if (id != $('#change_user_id').val()) {
+											for (var i = 0; i < userlist.length; i++) {
+												if ($('#change_user_id').val() == userlist[i].id) {
+													showDialog("用户编号已存在！");
+													return;
+												}
+											}
+										}
+										userlist[num].id = $('#change_user_id')
+												.val();
+										userlist[num].name = $(
+												'#change_user_name').val();
+									}
+									showList();
+								},
+								onCancel : function() {
+								}
+							});
 		};
-		
-		
+
+		//移除数据 否则出错
+		$('#my-confirm-change').on('closed.modal.amui', function() {
+			$(this).removeData('amui.modal');
+		});
+
+		$('#my-confirm-shanchu').on('closed.modal.amui', function() {
+			$(this).removeData('amui.modal');
+		});
 
 		function showDialog(msg) {
 			$('#dialog_title').html(msg);
