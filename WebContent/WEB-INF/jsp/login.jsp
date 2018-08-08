@@ -153,8 +153,11 @@
 	<script src="js/jquery.min.js"></script>
 	<script src="js/amazeui.min.js"></script>
 	<script>
+	var msg = '${msg}';
 		$(function() {
-			
+			if (msg != '') {
+				showDialog(msg);
+			}
 			$('#login').on(
 					'click',
 					function() {

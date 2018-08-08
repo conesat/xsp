@@ -32,7 +32,7 @@
 		<div class="pet_circle_nav" align="center">
 			<p>
 				<input type="text" id='add_user_list_name'
-					class="am-form-field am-radius" placeholder="输入分组名称" />
+					class="am-form-field am-radius" placeholder="输入分组名称" value="${name}" />
 			</p>
 		</div>
 
@@ -125,7 +125,8 @@
 			<div class="am-modal-hd">提示</div>
 			<div class="am-modal-bd" id="dialog_title"></div>
 			<div class="am-modal-footer">
-				<span class="am-modal-btn" data-am-modal-confirm>确定</span>
+				<span class="am-modal-btn" data-am-modal-cancel>取消</span> <span
+					class="am-modal-btn" data-am-modal-confirm>确定</span>
 			</div>
 		</div>
 	</div>
@@ -133,7 +134,10 @@
 	<script src="js/amazeui.min.js"></script>
 	<script type="text/javascript">
 		var userlist = new Array();
-
+		$(function() {
+			var names='${names}';
+			console.log(names);
+		});
 		$('#add_user_finish')
 				.on(
 						'click',
@@ -147,27 +151,34 @@
 							} else if (userlist.length == 0) {
 								showDialog("拒绝空的群组！");
 							} else {
-								$.ajax({
-									type : "post",
-									url : "addUserList?name="
-											+ $("#add_user_name").val()
-											+ "&userlist="
-											+ JSON.stringify(userlist),
-									async : false,
-									success : function(data) {
-										jsonData = JSON.parse(data);
-										if (jsonData.code == '101') {
-											showDialog("用户不存在");
-										} else if (jsonData.code == '102') {
-											showDialog("密码错误");
-										} else {
-											window.location.href = 'gotoIndex';
-										}
-									},
-									error : function(jqObj) {
+								$
+										.ajax({
+											type : "post",
+											url : "addUserList?name="
+													+ $("#add_user_list_name")
+															.val()
+													+ "&userlist="
+													+ JSON.stringify(userlist),
+											async : false,
+											success : function(data) {
+												jsonData = JSON.parse(data);
+												if (jsonData.code == '100') {
+													showDialog("已完成",
+															"gotoGuanliuser");
+												} else if (jsonData.code == '101') {
+													showDialog("新建失败");
+												} else if (jsonData.code == '102') {
+													showGotoDialog(
+															"账号已失效，请先登录",
+															"gotoLogin");
+												} else if (jsonData.code == '103') {
+													showDialog("群组名已存在！");
+												}
+											},
+											error : function(jqObj) {
 
-									}
-								});
+											}
+										});
 							}
 						});
 
@@ -177,7 +188,7 @@
 				onConfirm : function(options) {
 					if ($('#add_user_id').val() == '') {
 						showDialog("用户编号不能为空！");
-					} else if ($('#add_user_name').val()) {
+					} else if ($('#add_user_name').val() == '') {
 						showDialog("用户姓名不能为空！");
 					} else {
 						var user = new Object();
@@ -279,6 +290,19 @@
 				relatedTarget : this,
 				onConfirm : function(options) {
 					return true;
+				},
+				onCancel : function() {
+					return true;
+				}
+			});
+		}
+
+		function showGotoDialog(msg, url) {
+			$('#dialog_title').html(msg);
+			$('#my-confirm-show').modal({
+				relatedTarget : this,
+				onConfirm : function(options) {
+					window.location.href = url;
 				},
 				onCancel : function() {
 					return true;

@@ -21,12 +21,7 @@ import com.hg.xsp.entity.NameList;
 import com.hg.xsp.entity.Task;
 
 public class XmlTool {
-	// 收集列表
-	private static String TASK_PATH = "D:\\xsp\\user\\";
-	private static String TASK_FILENAME = "\\task\\tasks.xml";
-	// 用户群组
-	private static String NAME_PATH = "D:\\xsp\\user\\";
-	private static String NAME_FILENAME = "\\namelist\\users.xml";
+	private static String PATH = "D:\\xsp\\user\\";
 
 	/**
 	 * DOM方式创建xml文件
@@ -46,6 +41,7 @@ public class XmlTool {
 		Transformer tf = tff.newTransformer();
 		tf.setOutputProperty(OutputKeys.INDENT, "yes");
 		tf.transform(new DOMSource(document), new StreamResult(file));
+
 	}
 
 	public static List<Task> getTasks(String mail) {
@@ -61,7 +57,7 @@ public class XmlTool {
 			 * 创建文件对象
 			 */
 			DocumentBuilder db = dbf.newDocumentBuilder();// 创建解析器，解析XML文档
-			Document doc = db.parse(TASK_PATH + mail + TASK_FILENAME); // 使用dom解析xml文件
+			Document doc = db.parse(PATH + mail + "\\task\\tasks.xml"); // 使用dom解析xml文件
 			/*
 			 * 历遍列表，进行XML文件的数据提取
 			 */
@@ -120,7 +116,7 @@ public class XmlTool {
 
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			// 创建Document对象
-			Document xmldoc = db.parse(TASK_PATH + mail + TASK_FILENAME);
+			Document xmldoc = db.parse(PATH + mail + "\\task\\tasks.xml");
 			// 获取根节点
 			Element root = xmldoc.getDocumentElement();
 
@@ -151,49 +147,49 @@ public class XmlTool {
 			// 保存
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer former = factory.newTransformer();
-			former.transform(new DOMSource(xmldoc), new StreamResult(new File(TASK_PATH + mail + TASK_FILENAME)));
+			former.transform(new DOMSource(xmldoc), new StreamResult(new File(PATH + mail + "\\task\\tasks.xml")));
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}
 
 	// 新增收集群组
-	public static void addName(String mail, NameList nameList) {
+	public static void addName(String mail, String filename, NameList nameList) throws Exception {
+
+		System.out.println(mail + "   " + nameList.toString());
+
 		// 创建文件工厂实例
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setIgnoringElementContentWhitespace(false);
-		try {
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		// 创建Document对象
+		Document xmldoc = db.parse(PATH + mail + "\\namelist\\" + filename + ".xml");
+		// 获取根节点
+		Element root = xmldoc.getDocumentElement();
 
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			// 创建Document对象
-			Document xmldoc = db.parse(TASK_PATH + mail + TASK_FILENAME);
-			// 获取根节点
-			Element root = xmldoc.getDocumentElement();
+		Element taskNode = xmldoc.createElement("user");
+		taskNode.setAttribute("name", nameList.getName());
+		for (int i = 0; i < nameList.getNames().size(); i++) {
+			Element id = xmldoc.createElement("id");
+			id.setTextContent(nameList.getNames().get(i).getId());
+			taskNode.appendChild(id);
 
-			Element taskNode = xmldoc.createElement("uaers");
-			taskNode.setAttribute("name", nameList.getName());
-			for (int i = 0; i < nameList.getNames().size(); i++) {
-				Element id = xmldoc.createElement("id");
-				id.setTextContent(nameList.getNames().get(i).getId());
-				taskNode.appendChild(id);
-
-				Element name = xmldoc.createElement("name");
-				name.setTextContent(nameList.getNames().get(i).getName());
-				taskNode.appendChild(name);
-			}
-
-			// 把son添加到根节点中
-			root.appendChild(taskNode);
-			// 保存
-			TransformerFactory factory = TransformerFactory.newInstance();
-			Transformer former = factory.newTransformer();
-			former.transform(new DOMSource(xmldoc), new StreamResult(new File(TASK_PATH + mail + TASK_FILENAME)));
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			Element name = xmldoc.createElement("name");
+			name.setTextContent(nameList.getNames().get(i).getName());
+			taskNode.appendChild(name);
 		}
+
+		// 把son添加到根节点中
+		root.appendChild(taskNode);
+		// 保存
+		TransformerFactory factory = TransformerFactory.newInstance();
+		Transformer former = factory.newTransformer();
+		former.transform(new DOMSource(xmldoc),
+				new StreamResult(new File(PATH + mail + "\\namelist\\" + filename + ".xml")));
+
 	}
 
-	public static List<Name> getNameList(String mail) {
+	public static List<Name> getNameList(String mail, String filename) {
 		List<Name> names = new ArrayList<>();
 		/*
 		 * 创建文件工厂实例
@@ -206,12 +202,12 @@ public class XmlTool {
 			 * 创建文件对象
 			 */
 			DocumentBuilder db = dbf.newDocumentBuilder();// 创建解析器，解析XML文档
-			Document doc = db.parse(NAME_PATH + mail + NAME_FILENAME); // 使用dom解析xml文件
+			Document doc = db.parse(PATH + mail + "\\namelist\\" + filename + ".xml"); // 使用dom解析xml文件
 			/*
 			 * 历遍列表，进行XML文件的数据提取
 			 */
 			// 根据节点名称来获取所有相关的节点
-			NodeList sonlist = doc.getElementsByTagName("task");
+			NodeList sonlist = doc.getElementsByTagName("user");
 			for (int i = 0; i < sonlist.getLength(); i++) // 循环处理对象
 			{
 				Name myname = new Name();

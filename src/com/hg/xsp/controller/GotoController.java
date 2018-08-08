@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.JsonArray;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Null;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.hg.xsp.entity.Name;
+import com.hg.xsp.entity.NameList;
 import com.hg.xsp.entity.Student;
 import com.hg.xsp.entity.Task;
 import com.hg.xsp.entity.User;
@@ -26,7 +29,9 @@ import com.hg.xsp.services.MyService;
 import com.hg.xsp.tools.MyThread;
 import com.hg.xsp.tools.XmlTool;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 
 @Controller
 public class GotoController {
@@ -142,15 +147,11 @@ public class GotoController {
 	@RequestMapping(value = "downLoadwd", method = RequestMethod.GET)
 	public void downLoadwd(String type, HttpServletResponse response, boolean isOnLine) throws Exception {
 		File f = new File("/root/�ĵ�/bgfile/" + type + ".doc");
-		// ���ر����ļ�
-		String fileName = f.getName(); // �ļ���Ĭ�ϱ�����
-		// ��������
-		InputStream inStream = new FileInputStream(f);// �ļ��Ĵ��·��
-		// ��������ĸ�ʽ
+		String fileName = f.getName();
+		InputStream inStream = new FileInputStream(f);
 		response.reset();
 		response.setContentType("bin");
 		response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "UTF-8"));
-		// ѭ��ȡ�����е�����
 		byte[] b = new byte[100];
 		int len;
 		try {
@@ -182,15 +183,14 @@ public class GotoController {
 
 	@RequestMapping(value = "gotoShouji", method = RequestMethod.GET)
 	public String gotoShouji(HttpServletRequest request, Model model) {
-		User user=(User)request.getSession().getAttribute("user");
-		if (user!=null) {
-			List<Task> list=new ArrayList<>();
-			list=XmlTool.getTasks(user.getMail());
+		User user = (User) request.getSession().getAttribute("user");
+		if (user != null) {
+			List<Task> list = new ArrayList<>();
+			list = XmlTool.getTasks(user.getMail());
 			model.addAttribute("msg", "");
 			model.addAttribute("tasks", list);
-			System.out.println(list.toString());
 			return "shouji";
-		}else {
+		} else {
 			model.addAttribute("msg", "请先登录!");
 			return "index";
 		}
@@ -198,7 +198,15 @@ public class GotoController {
 
 	@RequestMapping(value = "gotoXinjianshouji", method = RequestMethod.GET)
 	public String gotoXinjianshouji(HttpServletRequest request, Model model) {
-		return "xinjianshouji";
+
+		User user = (User) request.getSession().getAttribute("user");
+		if (user != null) {
+
+			return "xinjianshouji";
+		} else {
+			model.addAttribute("msg", "请先登录!");
+			return "index";
+		}
 	}
 
 	@RequestMapping(value = "gotoShoujiye", method = RequestMethod.GET)
@@ -208,18 +216,49 @@ public class GotoController {
 
 	@RequestMapping(value = "gotoGuanliuser", method = RequestMethod.GET)
 	public String gotoGuanliuser(HttpServletRequest request, Model model) {
-		return "guanliuser";
+		User user = (User) request.getSession().getAttribute("user");
+		if (user == null) {
+			model.addAttribute("msg", "请先登录!");
+			return "login";
+		} else {
+			model.addAttribute("msg", "");
+			List<String> names = new ArrayList<>();
+			File file = new File("D:\\xsp\\user\\" + user.getMail() + "\\namelist"); // 获取其file对象
+			File[] fs = file.listFiles(); // 遍历path下的文件和目录，放在File数组中
+			for (File f : fs) { // 遍历File[]数组
+				names.add(f.getName().split("\\.")[0]);
+			}
+			model.addAttribute("names", names);
+			return "guanliuser";
+		}
+
 	}
 
 	@RequestMapping(value = "gotoShoujixiangxi", method = RequestMethod.GET)
 	public String gotoShoujixiangxi(HttpServletRequest request, Model model) {
-		return "shoujixiangxi";
+		User user = (User) request.getSession().getAttribute("user");
+		if (user != null) {
+			return "shoujixiangxi";
+		} else {
+			model.addAttribute("msg", "请先登录!");
+			return "index";
+		}
 	}
 
 	@RequestMapping(value = "gotoXinjianusers", method = RequestMethod.GET)
-	public String gotoXinjianusers(HttpServletRequest request, Model model) {
-		return "xinjianusers";
+	public String gotoXinjianusers(HttpServletRequest request, Model model, String name) {
+		User user = (User) request.getSession().getAttribute("user");
+		if (user != null) {
+			if (name != null) {
+				List<Name> names = XmlTool.getNameList(user.getMail(), name);
+				JSONArray jsonArray=JSONArray.fromObject(names);
+				model.addAttribute("name", name);
+				model.addAttribute("names", jsonArray);
+			}
+			return "xinjianusers";
+		} else {
+			model.addAttribute("msg", "请先登录!");
+			return "index";
+		}
 	}
-
-
 }
