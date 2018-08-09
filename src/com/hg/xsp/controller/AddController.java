@@ -25,16 +25,13 @@ public class AddController {
 	@RequestMapping(value = "addUserList", method = RequestMethod.POST)
 	public void gotomainpage(HttpServletRequest request, String userlist, String name, HttpServletResponse response,
 			String change) {
-		System.out.println(-1);
 		User user = (User) request.getSession().getAttribute("user");
 		JSONObject json = new JSONObject();
 		int re = 100;
 		if (user == null) {
 			re = 102;
 		} else {
-			System.out.println(0);
 			File file1 = new File(StaticValues.HOME_PATH + user.getMail() + "/namelist/" + change + ".xml");
-			System.out.println(1);
 			if (change != null && file1.exists()) {
 				file1.delete();
 			}

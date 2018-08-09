@@ -32,7 +32,8 @@
 		<div class="pet_circle_nav" align="center">
 			<p>
 				<input type="text" id='add_user_list_name'
-					class="am-form-field am-radius" placeholder="输入分组名称" value="${name}" />
+					class="am-form-field am-radius" placeholder="输入分组名称"
+					value="${name}" />
 			</p>
 		</div>
 
@@ -134,9 +135,9 @@
 	<script src="js/amazeui.min.js"></script>
 	<script type="text/javascript">
 		var userlist = new Array();
-		var change='${name}';
+		var change = '${name}';
 		$(function() {
-			var names='${names}';
+			var names = '${names}';
 			var jsonData = JSON.parse(names);
 			for (x in jsonData) {
 				var user = new Object();
@@ -146,49 +147,41 @@
 			}
 			showList();
 		});
-		$('#add_user_finish')
-				.on(
-						'click',
-						function() {
-							$("#add_user_list_name").removeClass(
-									"my_border_color_red");
-							if ($('#add_user_list_name').val() == '') {
-								$("#add_user_list_name").addClass(
-										"my_border_color_red");
-								showDialog("请填输入群组名！");
-							} else if (userlist.length == 0) {
-								showDialog("拒绝空的群组！");
-							} else {
-								$
-										.ajax({
-											type : "post",
-											url : "addUserList?name="
-													+ $("#add_user_list_name")
-															.val()
-													+ "&userlist="
-													+ JSON.stringify(userlist)+"&change="+change,
-											async : false,
-											success : function(data) {
-												jsonData = JSON.parse(data);
-												if (jsonData.code == '100') {
-													showDialog("已完成",
-															"gotoGuanliuser");
-												} else if (jsonData.code == '101') {
-													showDialog("新建失败");
-												} else if (jsonData.code == '102') {
-													showGotoDialog(
-															"账号已失效，请先登录",
-															"gotoLogin");
-												} else if (jsonData.code == '103') {
-													showDialog("群组名已存在！");
-												}
-											},
-											error : function(jqObj) {
+		$('#add_user_finish').on('click', function() {
+			$("#add_user_list_name").removeClass("my_border_color_red");
+			if ($('#add_user_list_name').val() == '') {
+				$("#add_user_list_name").addClass("my_border_color_red");
+				showDialog("请填输入群组名！");
+			} else if (userlist.length == 0) {
+				showDialog("拒绝空的群组！");
+			} else {
+				$.ajax({
+					type : "post",
+					url : "addUserList",
+					async : false,
+					data : {
+						name : $("#add_user_list_name").val(),
+						userlist : JSON.stringify(userlist),
+						change : change
+					},
+					success : function(data) {
+						jsonData = JSON.parse(data);
+						if (jsonData.code == '100') {
+							showDialog("已完成", "gotoGuanliuser");
+						} else if (jsonData.code == '101') {
+							showDialog("新建失败");
+						} else if (jsonData.code == '102') {
+							showGotoDialog("账号已失效，请先登录", "gotoLogin");
+						} else if (jsonData.code == '103') {
+							showDialog("群组名已存在！");
+						}
+					},
+					error : function(jqObj) {
 
-											}
-										});
-							}
-						});
+					}
+				});
+			}
+		});
 
 		function addUser() {
 			$('#my-confirm').modal({
