@@ -51,7 +51,6 @@ public class LoginAndRegisterController {
 	public void registerUser(HttpServletRequest request, Model model, User user, HttpServletResponse response,
 			String code) {
 		JSONObject json = new JSONObject();
-		System.out.println(user.toString() + "  code:" + code);
 		int re = 100;
 		if (request.getSession().getAttribute("code").equals(code)) {
 			re = loginAndRegisterServices.register(user);

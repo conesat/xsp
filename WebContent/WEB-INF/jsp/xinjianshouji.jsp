@@ -31,7 +31,7 @@
 
 	</div>
 	<div class="am-panel am-panel-default xinjian-panel">
-		<div class="am-panel-hd">收集码：3421</div>
+		<div class="am-panel-hd">收集码：${ID}</div>
 		<div class="am-panel-bd">
 			<form class="am-form am-form-horizontal">
 				

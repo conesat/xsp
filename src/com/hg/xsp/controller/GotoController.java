@@ -7,11 +7,8 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.json.JsonArray;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Null;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,50 +16,28 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.hg.xsp.entity.Name;
-import com.hg.xsp.entity.NameList;
 import com.hg.xsp.entity.Student;
 import com.hg.xsp.entity.Task;
 import com.hg.xsp.entity.User;
-import com.hg.xsp.services.MyService;
+import com.hg.xsp.services.SelectServices;
+import com.hg.xsp.staticvalues.StaticValues;
 import com.hg.xsp.tools.MyThread;
 import com.hg.xsp.tools.XmlTool;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-
 @Controller
 public class GotoController {
+	
 	@Autowired
-	MyService myService;
+	private SelectServices selectServices;
 
 	private MyThread myThread = null;
 
 	@RequestMapping(value = "gotoUpload", method = RequestMethod.GET)
 	public String gotomainpage(HttpServletRequest request) {
 		return "upload";
-	}
-
-	@RequestMapping(value = "XLH", method = RequestMethod.GET)
-	public String XLH(HttpServletRequest request, Model model) {
-		List<String> list = myService.selectListMsg();
-		model.addAttribute("list", list);
-		return "xinlihua";
-	}
-
-	@RequestMapping(value = "gotoGame", method = RequestMethod.GET)
-	public String gotoGame(HttpServletRequest request, Model model) {
-		List<String> list = myService.selectListMsg();
-		model.addAttribute("list", list);
-		return "game";
-	}
-
-	@RequestMapping(value = "addmsg", method = RequestMethod.GET)
-	public String addmsg(String msg, HttpServletRequest request, Model model) {
-		myService.insertMsg(msg);
-		return "redirect:XLH";
 	}
 
 	@RequestMapping(value = "upload", method = RequestMethod.POST)
@@ -82,11 +57,7 @@ public class GotoController {
 			student.setOpen(open);
 			student.setStu_id(stu_id);
 			student.setUrl(fname);
-			if (myService.updateStudent(student)) {
-				json.put("code", 0);
-			} else {
-				json.put("code", 1);
-			}
+			
 
 		} else {
 			json.put("code", 1);
@@ -201,7 +172,28 @@ public class GotoController {
 
 		User user = (User) request.getSession().getAttribute("user");
 		if (user != null) {
-
+			File dowordk = new File(StaticValues.HOME_PATH + user.getMail() + "\\task\\dowordk");
+			File doname = new File(StaticValues.HOME_PATH + user.getMail() + "\\task\\doname");
+			if (!dowordk.exists()) {
+				dowordk.mkdirs();
+			}
+			if (!doname.exists()) {
+				doname.mkdirs();
+			} 
+			int num=selectServices.selectSJID();
+			String ID="";
+			if (num>10000) {
+				ID=num+"";
+			}else if (num>1000) {
+				ID="0"+num;
+			}else if (num>100) {
+				ID="00"+num;
+			}else if (num>10) {
+				ID="000"+num;
+			}else if (num>=0) {
+				ID="0000"+num;
+			}
+			model.addAttribute("ID", ID);
 			return "xinjianshouji";
 		} else {
 			model.addAttribute("msg", "请先登录!");
@@ -211,7 +203,15 @@ public class GotoController {
 
 	@RequestMapping(value = "gotoShoujiye", method = RequestMethod.GET)
 	public String gotoShoujiye(HttpServletRequest request, Model model) {
-		return "shoujiye";
+		User user = (User) request.getSession().getAttribute("user");
+		if (user != null) {
+
+			return "shoujiye";
+		} else {
+			model.addAttribute("msg", "请先登录!");
+			return "index";
+		}
+
 	}
 
 	@RequestMapping(value = "gotoGuanliuser", method = RequestMethod.GET)
@@ -238,6 +238,7 @@ public class GotoController {
 	public String gotoShoujixiangxi(HttpServletRequest request, Model model) {
 		User user = (User) request.getSession().getAttribute("user");
 		if (user != null) {
+
 			return "shoujixiangxi";
 		} else {
 			model.addAttribute("msg", "请先登录!");
@@ -251,7 +252,7 @@ public class GotoController {
 		if (user != null) {
 			if (name != null) {
 				List<Name> names = XmlTool.getNameList(user.getMail(), name);
-				JSONArray jsonArray=JSONArray.fromObject(names);
+				JSONArray jsonArray = JSONArray.fromObject(names);
 				model.addAttribute("name", name);
 				model.addAttribute("names", jsonArray);
 			}
