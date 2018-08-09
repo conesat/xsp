@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.hg.xsp.entity.User;
+import com.hg.xsp.staticvalues.StaticValues;
 
 import net.sf.json.JSONObject;
 
@@ -23,7 +24,7 @@ public class DeleteController {
 		int re = 100;
 		User user = (User) request.getSession().getAttribute("user");
 		if (user != null) {
-			File file=new File("D:\\xsp\\user\\"+user.getMail()+"\\namelist\\"+name+".xml");
+			File file=new File(StaticValues.HOME_PATH+user.getMail()+"/namelist/"+name+".xml");
 			if (file.exists()) {
 				file.delete();
 			}

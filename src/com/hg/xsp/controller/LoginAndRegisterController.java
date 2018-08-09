@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.hg.xsp.entity.User;
 import com.hg.xsp.services.LoginAndRegisterServices;
+import com.hg.xsp.staticvalues.StaticValues;
 import com.hg.xsp.tools.SendMail;
 
 import net.sf.json.JSONObject;
@@ -76,7 +77,7 @@ public class LoginAndRegisterController {
 		try {
 			SendMail.sendMail(mail, "您使用此邮箱注册学生派，验证码为" + code + "  如非本人操作，请忽略此邮件");
 			request.getSession().setAttribute("code", code);
-			File file = new File("D:\\xsp\\user\\" + mail);
+			File file = new File(StaticValues.HOME_PATH + mail);
 			file.mkdirs();
 			json.put("code", 100);
 		} catch (Exception e1) {

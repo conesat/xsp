@@ -155,6 +155,7 @@ public class GotoController {
 	@RequestMapping(value = "gotoShouji", method = RequestMethod.GET)
 	public String gotoShouji(HttpServletRequest request, Model model) {
 		User user = (User) request.getSession().getAttribute("user");
+		
 		if (user != null) {
 			List<Task> list = new ArrayList<>();
 			list = XmlTool.getTasks(user.getMail());
@@ -172,8 +173,8 @@ public class GotoController {
 
 		User user = (User) request.getSession().getAttribute("user");
 		if (user != null) {
-			File dowordk = new File(StaticValues.HOME_PATH + user.getMail() + "\\task\\dowordk");
-			File doname = new File(StaticValues.HOME_PATH + user.getMail() + "\\task\\doname");
+			File dowordk = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowordk");
+			File doname = new File(StaticValues.HOME_PATH + user.getMail() + "/task/doname");
 			if (!dowordk.exists()) {
 				dowordk.mkdirs();
 			}
@@ -205,7 +206,6 @@ public class GotoController {
 	public String gotoShoujiye(HttpServletRequest request, Model model) {
 		User user = (User) request.getSession().getAttribute("user");
 		if (user != null) {
-
 			return "shoujiye";
 		} else {
 			model.addAttribute("msg", "请先登录!");
@@ -223,7 +223,11 @@ public class GotoController {
 		} else {
 			model.addAttribute("msg", "");
 			List<String> names = new ArrayList<>();
-			File file = new File("D:\\xsp\\user\\" + user.getMail() + "\\namelist"); // 获取其file对象
+			File file = new File(StaticValues.HOME_PATH + user.getMail() + "/namelist"); // 获取其file对象
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+			System.out.println(file.exists());
 			File[] fs = file.listFiles(); // 遍历path下的文件和目录，放在File数组中
 			for (File f : fs) { // 遍历File[]数组
 				names.add(f.getName().split("\\.")[0]);

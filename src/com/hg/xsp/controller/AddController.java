@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.hg.xsp.entity.Name;
 import com.hg.xsp.entity.NameList;
 import com.hg.xsp.entity.User;
+import com.hg.xsp.staticvalues.StaticValues;
 import com.hg.xsp.tools.XmlTool;
 
 import net.sf.json.JSONArray;
@@ -24,22 +25,26 @@ public class AddController {
 	@RequestMapping(value = "addUserList", method = RequestMethod.POST)
 	public void gotomainpage(HttpServletRequest request, String userlist, String name, HttpServletResponse response,
 			String change) {
+		System.out.println(-1);
 		User user = (User) request.getSession().getAttribute("user");
 		JSONObject json = new JSONObject();
 		int re = 100;
 		if (user == null) {
 			re = 102;
 		} else {
-			File file1 = new File("D:\\xsp\\user\\" + user.getMail() + "\\namelist\\" + change + ".xml");
+			System.out.println(0);
+			File file1 = new File(StaticValues.HOME_PATH + user.getMail() + "/namelist/" + change + ".xml");
+			System.out.println(1);
 			if (change != null && file1.exists()) {
 				file1.delete();
 			}
-			File file = new File("D:\\xsp\\user\\" + user.getMail() + "\\namelist\\" + name + ".xml");
+			File file = new File(StaticValues.HOME_PATH + user.getMail() + "/namelist/" + name + ".xml");
+			System.out.println(2);
 			if (file.exists()) {
 				re = 103;
 			} else {
 				try {
-					XmlTool.taskXmlCreate(file, "userlist");
+					XmlTool.createXml(file, "userlist");
 					List<Name> names = new ArrayList<>();
 					JSONArray jsonArray = JSONArray.fromObject(userlist);
 					for (int i = 0; i < jsonArray.size(); i++) {

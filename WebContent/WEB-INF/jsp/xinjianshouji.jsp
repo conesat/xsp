@@ -25,7 +25,6 @@
 				<a href="gotoShouji" class="am-icon-chevron-left"></a>
 			</div>
 			<div class="pet_news_list_tag_name">新建收集</div>
-
 			</header>
 		</div>
 
@@ -34,7 +33,7 @@
 		<div class="am-panel-hd">收集码：${ID}</div>
 		<div class="am-panel-bd">
 			<form class="am-form am-form-horizontal">
-				
+
 				<!-- am-form-group 的基础上添加了 am-form-group-sm -->
 				<div class="am-form-group am-form-group-sm">
 					<label for="doc-ipt-3-1" class="am-u-sm-2 am-form-label xjsj-label">标题</label>
@@ -134,21 +133,82 @@
 			</form>
 		</div>
 	</div>
+
+	<div class="am-modal am-modal-confirm" tabindex="-1"
+		id="my-confirm-show">
+		<div class="am-modal-dialog">
+			<div class="am-modal-hd">提示</div>
+			<div class="am-modal-bd" id="dialog_title"></div>
+			<div class="am-modal-footer">
+				<span class="am-modal-btn" data-am-modal-cancel>取消</span> <span
+					class="am-modal-btn" data-am-modal-confirm>确定</span>
+			</div>
+		</div>
+	</div>
+
 	<div class="pet_article_footer_info">Copyright(c)2018 hg All
 		Rights Reserved</div>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/amazeui.min.js"></script>
+	<script src="js/plupload.full.min.js"></script>
 	<script type="text/javascript">
-			$(function() {
-				$('#doc-form-file').on('change', function() {
-					var fileNames = '';
-					$.each(this.files, function() {
-						fileNames += '<span class="am-badge">' + this.name + '</span> ';
-					});
-					$('#file-list').html(fileNames);
+		var fileNames = new Array();
+		$(function() {
+			/* $('#doc-form-file').on('change', function() {
+				$.each(this.files, function() {
+					console.log(this);
+					for (var i = 0; i < fileNames.length; i++) {
+						if (fileNames[i] == this.name) {
+							return;
+						}
+					}
+					fileNames[fileNames.length] = this.name;
 				});
+				showFils();
+			}); */
+			
+			
+		});
+
+		function showFils() {
+			var divs = "";
+			for (var i = 0; i < fileNames.length; i++) {
+				divs += '<div style="margin-bottom:5px;background-color: #dadada;"><span class="am-badge" style="line-height: 22px;">'
+						+ fileNames[i]
+						+ '</span> <span style="float:right;" ><button onclick="deleteDiv('
+						+ i
+						+ ')" type="button" class="am-btn am-btn-warning am-btn-xs">删除</button></span></div>';
+			}
+			$('#file-list').html(divs);
+		}
+
+		function deleteDiv(num) {
+			fileNames.splice(num, 1);
+			showFils();
+			return false;
+		}
+		
+		function showGotoDialog(msg, url) {
+			$('#dialog_title').html(msg);
+			$('#my-confirm-show').modal({
+				relatedTarget : this,
+				onConfirm : function(options) {
+					if(url!=""){
+						window.location.href = url;
+					}else{
+						return true;
+					}
+				},
+				onCancel : function() {
+					return true;
+				}
 			});
-		</script>
+		}
+		
+		$('#my-confirm-show').on('closed.modal.amui', function() {
+			$(this).removeData('amui.modal');
+		});
+	</script>
 </body>
 
 </html>

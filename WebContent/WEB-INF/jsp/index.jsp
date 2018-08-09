@@ -74,22 +74,22 @@
 			<ul class="pet_circle_nav_list">
 				<li><a href="gotoShouji"
 					class="  pet_nav_xinxianshi icon-anzhuo"></a><span>安卓</span></li>
-				<li><a id="doc-confirm-toggle"
+				<li><a id="#"
 					class="pet_nav_zhangzhishi icon-java"></a><span>java</span></li>
-				<li><a href="" class="  pet_nav_kantuya icon-java_web"></a><span>jee</span></li>
-				<li><a href="" class="  pet_nav_mengzhuanti icon-qianduan"></a><span>前端</span></li>
-				<li><a href="" class="  pet_nav_meirong icon-c_c"></a><span>c/c++</span></li>
-				<li><a href="" class="  pet_nav_yiyuan icon-net"></a><span>.net</span></li>
+				<li><a href="#" class="  pet_nav_kantuya icon-java_web"></a><span>jee</span></li>
+				<li><a href="#" class="  pet_nav_mengzhuanti icon-qianduan"></a><span>前端</span></li>
+				<li><a href="#" class="  pet_nav_meirong icon-c_c"></a><span>c/c++</span></li>
+				<li><a href="#" class="  pet_nav_yiyuan icon-net"></a><span>.net</span></li>
 			</ul>
 			<blockquote>
 				<p class="my_blockquote">帮助我们</p>
 			</blockquote>
 			<ul class="pet_circle_nav_list">
-				<li><a href="gotoShouji"
-					class="  pet_nav_xinxianshi icon-renminbi"></a><span>捐助作者</span></li>
-				<li><a id="doc-confirm-toggle"
+				<li><a id="juanzhu"
+					class="pet_nav_xinxianshi icon-renminbi"></a><span>捐助作者</span></li>
+				<li><a id=""
 					class="pet_nav_zhangzhishi icon-jiaruwomen"></a><span>加入我们</span></li>
-				<li><a href="" class="  pet_nav_kantuya icon-lianxiwomen"></a><span>联系我们</span></li>
+				<li><a href="#" class="  pet_nav_kantuya icon-lianxiwomen"></a><span>联系我们</span></li>
 			</ul>
 		</div>
 
@@ -237,6 +237,18 @@
 			});
 
 		});
+		$('#juanzhu').on('click',function(){
+			$('#my-alert').modal({
+				relatedTarget : this,
+				onConfirm : function(options) {
+					return true;
+				},
+				onCancel : function() {
+					return true;
+				}
+			});
+		});
+		
 		function showDialog(msg) {
 			$('#dialog_title').html(msg);
 			$('#my-confirm3').modal({

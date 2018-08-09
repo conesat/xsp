@@ -30,7 +30,7 @@ public class XmlTool {
 	 *            文件
 	 * @throws Exception
 	 */
-	public static void taskXmlCreate(File file, String ele_root) throws Exception {
+	public static void createXml(File file, String ele_root) throws Exception {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document document = db.newDocument();
@@ -57,7 +57,14 @@ public class XmlTool {
 			 * 创建文件对象
 			 */
 			DocumentBuilder db = dbf.newDocumentBuilder();// 创建解析器，解析XML文档
-			Document doc = db.parse(StaticValues.HOME_PATH + mail + "\\task\\tasks.xml"); // 使用dom解析xml文件
+			File file=new File(StaticValues.HOME_PATH + mail + "/task/tasks.xml");
+			if (!file.exists()) {
+				new File(StaticValues.HOME_PATH + mail + "/task").mkdirs();
+				createXml(file,"tasks");
+			}
+			
+			Document doc = db.parse(StaticValues.HOME_PATH + mail + "/task/tasks.xml"); // 使用dom解析xml文件
+			
 			/*
 			 * 历遍列表，进行XML文件的数据提取
 			 */
@@ -102,7 +109,7 @@ public class XmlTool {
 				tasks.add(task);
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 		return tasks;
 	}
@@ -116,7 +123,7 @@ public class XmlTool {
 
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			// 创建Document对象
-			Document xmldoc = db.parse(StaticValues.HOME_PATH + mail + "\\task\\tasks.xml");
+			Document xmldoc = db.parse(StaticValues.HOME_PATH + mail + "/task/tasks.xml");
 			// 获取根节点
 			Element root = xmldoc.getDocumentElement();
 
@@ -148,7 +155,7 @@ public class XmlTool {
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer former = factory.newTransformer();
 			former.transform(new DOMSource(xmldoc),
-					new StreamResult(new File(StaticValues.HOME_PATH + mail + "\\task\\tasks.xml")));
+					new StreamResult(new File(StaticValues.HOME_PATH + mail + "/task/tasks.xml")));
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -161,7 +168,7 @@ public class XmlTool {
 		dbf.setIgnoringElementContentWhitespace(false);
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		// 创建Document对象
-		Document xmldoc = db.parse(StaticValues.HOME_PATH + mail + "\\namelist\\" + filename + ".xml");
+		Document xmldoc = db.parse(StaticValues.HOME_PATH + mail + "/namelist/" + filename + ".xml");
 		// 获取根节点
 		Element root = xmldoc.getDocumentElement();
 		for (int i = 0; i < nameList.getNames().size(); i++) {
@@ -178,7 +185,7 @@ public class XmlTool {
 		TransformerFactory factory = TransformerFactory.newInstance();
 		Transformer former = factory.newTransformer();
 		former.transform(new DOMSource(xmldoc),
-				new StreamResult(new File(StaticValues.HOME_PATH + mail + "\\namelist\\" + filename + ".xml")));
+				new StreamResult(new File(StaticValues.HOME_PATH + mail + "/namelist/" + filename + ".xml")));
 	}
 
 	public static List<Name> getNameList(String mail, String filename) {
@@ -194,7 +201,7 @@ public class XmlTool {
 			 * 创建文件对象
 			 */
 			DocumentBuilder db = dbf.newDocumentBuilder();// 创建解析器，解析XML文档
-			Document doc = db.parse(StaticValues.HOME_PATH + mail + "\\namelist\\" + filename + ".xml"); // 使用dom解析xml文件
+			Document doc = db.parse(StaticValues.HOME_PATH + mail + "/namelist/" + filename + ".xml"); // 使用dom解析xml文件
 			/*
 			 * 历遍列表，进行XML文件的数据提取
 			 */
