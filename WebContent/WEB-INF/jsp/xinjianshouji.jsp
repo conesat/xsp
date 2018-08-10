@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
@@ -25,7 +26,11 @@
 				<a href="gotoShouji" class="am-icon-chevron-left"></a>
 			</div>
 			<div class="pet_news_list_tag_name">新建收集</div>
+
 			</header>
+			<div class="am-progress am-progress-xs">
+				<div class="am-progress-bar" id='add_sj_jd' style="width: 0%"></div>
+			</div>
 		</div>
 
 	</div>
@@ -38,7 +43,7 @@
 				<div class="am-form-group am-form-group-sm">
 					<label for="doc-ipt-3-1" class="am-u-sm-2 am-form-label xjsj-label">标题</label>
 					<div class="am-u-sm-10">
-						<input type="text" id="doc-ipt-3-1" class="am-form-field"
+						<input type="text" id="add_sj_bt" class="am-form-field"
 							placeholder="输入标题">
 					</div>
 				</div>
@@ -48,7 +53,7 @@
 					<label for="doc-ipt-3-1" class="am-u-sm-2 am-form-label xjsj-label">内容</label>
 					<div class="am-u-sm-10">
 						<div class="am-form-group">
-							<textarea class="" rows="5" id="doc-ta-1" placeholder="输入描述内容"></textarea>
+							<textarea class="" rows="5" id="add_sj_nr" placeholder="输入描述内容"></textarea>
 						</div>
 					</div>
 
@@ -58,8 +63,8 @@
 					<div class="am-u-sm-10" style="height: 32px;">
 						<div class="am-form-group">
 							<p>
-								<input type="text" class="am-form-field" placeholder="选择截止日期"
-									data-am-datepicker readonly required />
+								<input type="text" id='add_sj_ri' class="am-form-field"
+									placeholder="选择截止日期" data-am-datepicker readonly required />
 							</p>
 						</div>
 					</div>
@@ -69,7 +74,8 @@
 					<label for="doc-ipt-3-1" class="am-u-sm-2 am-form-label xjsj-label">时间</label>
 					<div class="am-u-sm-10" style="height: 32px;">
 						<div class="am-form-group">
-							<select>
+							<select id='add_sj_sj'>
+								<option value="">请选择时间</option>
 								<option value="01">01:00</option>
 								<option value="02">02:00</option>
 								<option value="03">03:00</option>
@@ -103,9 +109,11 @@
 					<label for="doc-ipt-3-1" class="am-u-sm-2 am-form-label xjsj-label">群组</label>
 					<div class="am-u-sm-10" style="height: 32px;">
 						<div class="am-form-group">
-							<select>
-								<option value="01">软件154</option>
-								<option value="01">软件154</option>
+							<select id='add_sj_qz'>
+								<option value="">请选择群组</option>
+								<c:forEach items="${names}" var="name" varStatus="status">
+									<option value="${name}">${name}</option>
+								</c:forEach>
 							</select>
 						</div>
 					</div>
@@ -114,11 +122,12 @@
 					<label for="doc-ipt-3-1" class="am-u-sm-2 am-form-label xjsj-label">附件</label>
 					<div class="am-u-sm-10">
 						<div class="am-form-group">
-							<div class="am-form-group am-form-file">
-								<button type="button" class="am-btn am-btn-default am-btn-sm">
+							<div class="am-form-group">
+								<button type="button" id='browse'
+									class="am-btn am-btn-default am-btn-sm">
 									<i class="am-icon-cloud-upload"></i> 选择要上传的文件
 								</button>
-								<input id="doc-form-file" type="file" multiple>
+								<!-- <input id="doc-form-file" type="file" multiple> -->
 							</div>
 							<div id="file-list"></div>
 						</div>
@@ -127,7 +136,7 @@
 
 				<div class="am-form-group">
 					<div class="am-u-sm-10 am-u-sm-offset-2">
-						<button type="submit" class="am-btn am-btn-default">提交</button>
+						<button type="button" class="am-btn am-btn-default" id='add_sj_tj'>提交</button>
 					</div>
 				</div>
 			</form>
@@ -152,29 +161,120 @@
 	<script src="js/amazeui.min.js"></script>
 	<script src="js/plupload.full.min.js"></script>
 	<script type="text/javascript">
-		var fileNames = new Array();
+		var uploader;
 		$(function() {
-			/* $('#doc-form-file').on('change', function() {
-				$.each(this.files, function() {
-					console.log(this);
-					for (var i = 0; i < fileNames.length; i++) {
-						if (fileNames[i] == this.name) {
-							return;
-						}
-					}
-					fileNames[fileNames.length] = this.name;
-				});
-				showFils();
-			}); */
+			$("#add_sj_bt").removeClass("my_border_color_red");
+			$("#add_sj_nr").removeClass("my_border_color_red");
+			$("#add_sj_ri").removeClass("my_border_color_red");
+			$("#add_sj_sj").removeClass("my_border_color_red");
+			$("#add_sj_qz").removeClass("my_border_color_red");
+			//实例化一个plupload上传对象
+			uploader = new plupload.Uploader({
+				browse_button : 'browse', //触发文件选择对话框的按钮，为那个元素id
+				url : '${pageContext.request.contextPath}/addShouJi?title='
+						+ $('#add_sj_bt').val() + "&content="
+						+ $('#add_sj_nr').val() + "&date="
+						+ $('#add_sj_ri').val() + "&time="
+						+ $('#add_sj_sj').val() + "&users="
+						+ $('#add_sj_qz').val(), //服务器端的上传页面地址\
+				runtimes : 'html5,flash,silverlight',//设置运行环境，会按设置的顺序，可以选择的值有html5,gears,flash,silverlight,browserplus,html
+				flash_swf_url : './js/Moxie.swf',
+				silverlight_xap_url : './js/Moxie.xap',
+				max_file_size : '10mb',//100b, 10kb, 10mb, 1gb
+				chunk_size : '1mb',//分块大小，小于这个大小的不分块
+				unique_names : true
+			});
+			//在实例对象上调用init()方法进行初始化
+			uploader.init();
 			
-			
+			uploader.bind('BeforeUpload', function (uploader, files) {
+                uploader.settings.url = '${pageContext.request.contextPath}/addShouJi?title='
+					+ $('#add_sj_bt').val() + "&content="
+					+ $('#add_sj_nr').val() + "&date="
+					+ $('#add_sj_ri').val() + "&time="
+					+ $('#add_sj_sj').val() + "&users="
+					+ $('#add_sj_qz').val();
+            });
+
+			//绑定各种事件，并在事件监听函数中做你想做的事
+			uploader
+					.bind(
+							'FilesAdded',
+							function(uploader, files) {
+								//每个事件监听函数都会传入一些很有用的参数，
+								//我们可以利用这些参数提供的信息来做比如更新UI，提示上传进度等操作
+								if (uploader.files.length > 4) {
+									showGotoDialog("最多选择四个文件！", "");
+									uploader.files.splice(4,
+											uploader.files.length - 4);
+								}
+								if ((new Set(files)).size != files.length) {
+									console.log((new Set(files)).size + "  "
+											+ files.length);
+									showGotoDialog("存在重复文件名！", "");
+									uploader.files.splice(
+											uploader.files.length - 1,
+											files.length);
+								} else {
+									for (var i = 0; i < uploader.files.length
+											- files.length; i++) {
+										for (var j = 0; j < files.length; j++) {
+											if (uploader.files[i].name == files[j].name) {
+												showGotoDialog("存在重复文件名！", "");
+												uploader.files
+														.splice(
+																uploader.files.length - 1,
+																files.length);
+												break;
+											}
+										}
+									}
+								}
+								showFils();
+							});
+
+			//会在文件上传过程中不断触发，可以用此事件来显示上传进度监听（比如说上传进度）
+			uploader.bind('UploadProgress', function(uploader, file) {
+				$('#add_sj_jd').width(file.percent);
+			});
+
+			$('#add_sj_tj').on('click', function() {
+				reset_input_color();
+				if ($('#add_sj_bt').val() == '') {
+					$("#add_sj_bt").addClass("my_border_color_red");
+					showGotoDialog("请输入标题", "");
+				} else if ($('#add_sj_nr').val() == '') {
+					$("#add_sj_nr").addClass("my_border_color_red");
+					showGotoDialog("请输入内容", "");
+				} else if ($('#add_sj_ri').val() == '') {
+					$("#add_sj_ri").addClass("my_border_color_red");
+					showGotoDialog("请输入日期", "");
+				} else if ($('#add_sj_sj').val() == '') {
+					$("#add_sj_sj").addClass("my_border_color_red");
+					showGotoDialog("请选择时间", "");
+				} else if ($('#add_sj_qz').val() == '') {
+					$("#add_sj_qz").addClass("my_border_color_red");
+					showGotoDialog("请选择群租", "");
+				} else {
+					uploader.start();
+				}
+			});
+
 		});
+
+		function reset_input_color() {
+			$("#add_sj_bt").removeClass("my_border_color_red");
+			$("#add_sj_nr").removeClass("my_border_color_red");
+			$("#add_sj_ri").removeClass("my_border_color_red");
+			$("#add_sj_sj").removeClass("my_border_color_red");
+			$("#add_sj_qz").removeClass("my_border_color_red");
+		}
 
 		function showFils() {
 			var divs = "";
-			for (var i = 0; i < fileNames.length; i++) {
-				divs += '<div style="margin-bottom:5px;background-color: #dadada;"><span class="am-badge" style="line-height: 22px;">'
-						+ fileNames[i]
+			for (var i = 0; i < uploader.files.length; i++) {
+				divs += '<div style="margin-bottom:5px;background-color: #dadada;"><span class="am-badge" style="line-height: 22px;overflow: hidden;width: 70%;text-align: left;">'
+						+ uploader.files[i].name
 						+ '</span> <span style="float:right;" ><button onclick="deleteDiv('
 						+ i
 						+ ')" type="button" class="am-btn am-btn-warning am-btn-xs">删除</button></span></div>';
@@ -183,19 +283,19 @@
 		}
 
 		function deleteDiv(num) {
-			fileNames.splice(num, 1);
+			uploader.files.splice(num, 1);
 			showFils();
 			return false;
 		}
-		
+
 		function showGotoDialog(msg, url) {
 			$('#dialog_title').html(msg);
 			$('#my-confirm-show').modal({
 				relatedTarget : this,
 				onConfirm : function(options) {
-					if(url!=""){
+					if (url != "") {
 						window.location.href = url;
-					}else{
+					} else {
 						return true;
 					}
 				},
@@ -204,7 +304,7 @@
 				}
 			});
 		}
-		
+
 		$('#my-confirm-show').on('closed.modal.amui', function() {
 			$(this).removeData('amui.modal');
 		});

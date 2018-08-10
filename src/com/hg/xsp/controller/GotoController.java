@@ -155,7 +155,6 @@ public class GotoController {
 	@RequestMapping(value = "gotoShouji", method = RequestMethod.GET)
 	public String gotoShouji(HttpServletRequest request, Model model) {
 		User user = (User) request.getSession().getAttribute("user");
-		
 		if (user != null) {
 			List<Task> list = new ArrayList<>();
 			list = XmlTool.getTasks(user.getMail());
@@ -173,10 +172,10 @@ public class GotoController {
 
 		User user = (User) request.getSession().getAttribute("user");
 		if (user != null) {
-			File dowordk = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowordk");
+			File dowork = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork");
 			File doname = new File(StaticValues.HOME_PATH + user.getMail() + "/task/doname");
-			if (!dowordk.exists()) {
-				dowordk.mkdirs();
+			if (!dowork.exists()) {
+				dowork.mkdirs();
 			}
 			if (!doname.exists()) {
 				doname.mkdirs();
@@ -194,6 +193,16 @@ public class GotoController {
 			}else if (num>=0) {
 				ID="0000"+num;
 			}
+			List<String> names = new ArrayList<>();
+			File file = new File(StaticValues.HOME_PATH + user.getMail() + "/namelist"); // 获取其file对象
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+			File[] fs = file.listFiles(); // 遍历path下的文件和目录，放在File数组中
+			for (File f : fs) { // 遍历File[]数组
+				names.add(f.getName().split("\\.")[0]);
+			}
+			model.addAttribute("names", names);
 			model.addAttribute("ID", ID);
 			return "xinjianshouji";
 		} else {
@@ -227,7 +236,6 @@ public class GotoController {
 			if (!file.exists()) {
 				file.mkdirs();
 			}
-			System.out.println(file.exists());
 			File[] fs = file.listFiles(); // 遍历path下的文件和目录，放在File数组中
 			for (File f : fs) { // 遍历File[]数组
 				names.add(f.getName().split("\\.")[0]);

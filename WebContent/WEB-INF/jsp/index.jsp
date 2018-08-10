@@ -112,7 +112,7 @@
 				Rights Reserved</div>
 		</div>
 	</div>
-	<div class="am-modal am-modal-alert" tabindex="-1" id="my-alert">
+	<div class="am-modal am-modal-alert" tabindex="-1" id="my-alert" style="top: 10%">
 		<div class="am-modal-dialog">
 			<div class="am-panel am-panel-default">
 				<div class="am-panel-hd">您的支持使我们最大的动力</div>

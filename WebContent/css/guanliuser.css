@@ -87,3 +87,6 @@
 }
 
 
+.am-form .am-form-group .my_border_color_red {
+	border-color: red;
+}

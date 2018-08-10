@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import com.hg.xsp.entity.Name;
 import com.hg.xsp.entity.NameList;
+import com.hg.xsp.entity.Plupload;
 import com.hg.xsp.entity.User;
 import com.hg.xsp.staticvalues.StaticValues;
+import com.hg.xsp.tools.PluploadUtil;
 import com.hg.xsp.tools.XmlTool;
 
 import net.sf.json.JSONArray;
@@ -36,7 +38,6 @@ public class AddController {
 				file1.delete();
 			}
 			File file = new File(StaticValues.HOME_PATH + user.getMail() + "/namelist/" + name + ".xml");
-			System.out.println(2);
 			if (file.exists()) {
 				re = 103;
 			} else {
@@ -64,6 +65,48 @@ public class AddController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
+	
+	
+	/**上传处理方法*/
+	@RequestMapping(value="addShouJi", method = RequestMethod.POST)
+	public void addShouJi(Plupload plupload,HttpServletRequest request, HttpServletResponse response,String title) {
+		User user = (User) request.getSession().getAttribute("user");
+		JSONObject json = new JSONObject();
+		System.out.println(title);
+		int re = 100;
+		if (user == null) {
+			re = 102;
+		} else {
+			plupload.setRequest(request);
+			//文件存储路径
+			File dir = new File(StaticValues.HOME_PATH+user.getMail()+"/task/dowork/"+title);
+			System.out.println(dir);
+			//System.out.println(dir.getPath());
+			try {
+				//上传文件
+				PluploadUtil.upload(plupload, dir);
+				//判断文件是否上传成功（被分成块的文件是否全部上传完成）
+				if (PluploadUtil.isUploadFinish(plupload)) {
+				}
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		json.put("code", re);
+		try {
+			response.getWriter().print(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	
+	}
+
+	
 }

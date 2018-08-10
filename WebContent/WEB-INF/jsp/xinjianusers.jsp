@@ -167,7 +167,7 @@
 					success : function(data) {
 						jsonData = JSON.parse(data);
 						if (jsonData.code == '100') {
-							showDialog("已完成", "gotoGuanliuser");
+							showGotoDialog("已完成", "gotoGuanliuser");
 						} else if (jsonData.code == '101') {
 							showDialog("新建失败");
 						} else if (jsonData.code == '102') {
@@ -215,7 +215,7 @@
 		function showList() {
 			$("#user_list").html("");
 			for (var i = 0; i < userlist.length; i++) {
-				var text = '<li><span class="am-badge am-badge-success" onclick="change('
+				var text = '<li><span class="am-badge am-badge-success" onclick="changeList('
 						+ i
 						+ ')">修改</span> <span onclick="shanchu('
 						+ i
@@ -244,7 +244,7 @@
 			});
 		};
 
-		function change(num) {
+		function changeList(num) {
 			var ren = true;
 			$('#change_user_id').val(userlist[num].id);
 			$('#change_user_name').val(userlist[num].name);
@@ -285,6 +285,10 @@
 			$(this).removeData('amui.modal');
 		});
 
+		$('#my-confirm-show').on('closed.modal.amui', function() {
+			$(this).removeData('amui.modal');
+		});
+
 		function showDialog(msg) {
 			$('#dialog_title').html(msg);
 			$('#my-confirm-show').modal({
@@ -303,6 +307,7 @@
 			$('#my-confirm-show').modal({
 				relatedTarget : this,
 				onConfirm : function(options) {
+					console.log(123);
 					window.location.href = url;
 				},
 				onCancel : function() {
