@@ -4,7 +4,7 @@
 <mapper namespace="com.hg.xsp.dao.InsertMapper">
 	<insert id="addShouJi" parameterType="com.hg.xsp.entity.Task">
 		insert into
-		shouji(id,end_time)
-		values(#{id},#{end});
+		shouji(id,end_time,mail)
+		values(#{id},#{end},#{mail});
 	</insert>
 </mapper>

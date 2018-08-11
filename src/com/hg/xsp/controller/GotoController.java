@@ -220,7 +220,7 @@ public class GotoController {
 	public String gotoShoujixiangxi(HttpServletRequest request, Model model,String id) {
 		User user = (User) request.getSession().getAttribute("user");
 		if (user != null) {
-			List<Name> names = XmlTool.getNameList(user.getMail(), id);
+			List<Name> names = XmlTool.getNameStateList(user.getMail(), id);
 			JSONArray jsonArray = JSONArray.fromObject(names);
 			model.addAttribute("name", id);
 			model.addAttribute("names", jsonArray);

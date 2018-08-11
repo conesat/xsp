@@ -36,6 +36,7 @@ public class XmlTool {
 		Document document = db.newDocument();
 		document.setXmlStandalone(true);
 		Element root = document.createElement(ele_root);
+		root.setTextContent(" ");
 		document.appendChild(root);
 		TransformerFactory tff = TransformerFactory.newInstance();
 		Transformer tf = tff.newTransformer();
@@ -75,6 +76,7 @@ public class XmlTool {
 				Task task = new Task();
 				// 节点属性的处理
 				Element son = (Element) sonlist.item(i);
+				task.setId(son.getAttribute("id"));
 				// 循环节点son内的所有子节点
 				for (Node node = son.getFirstChild(); node != null; node = node.getNextSibling()) {
 					// 判断是否为元素节点
@@ -128,19 +130,36 @@ public class XmlTool {
 			taskNode.setAttribute("id", task.getId());
 
 			Element title = xmldoc.createElement("title");
-			title.setTextContent(task.getTitle());
+			if (task.getTitle().equals("")) {
+				title.setTextContent(" ");
+			}else {
+				title.setTextContent(task.getTitle());
+			}
+			
 			taskNode.appendChild(title);
 
 			Element content = xmldoc.createElement("content");
-			content.setTextContent(task.getContent());
+			if (task.getContent().equals("")) {
+				content.setTextContent(" ");
+			}else {
+				content.setTextContent(task.getContent());
+			}
 			taskNode.appendChild(content);
 
 			Element begin = xmldoc.createElement("begin");
-			begin.setTextContent(task.getBegin());
+			if (task.getBegin().equals("")) {
+				begin.setTextContent(" ");
+			}else {
+				begin.setTextContent(task.getBegin());
+			}
 			taskNode.appendChild(begin);
 
 			Element end = xmldoc.createElement("end");
-			end.setTextContent(task.getEnd());
+			if (task.getEnd().equals("")) {
+				end.setTextContent(" ");
+			}else {
+				end.setTextContent(task.getEnd());
+			}
 			taskNode.appendChild(end);
 
 			Element state = xmldoc.createElement("state");
@@ -154,7 +173,7 @@ public class XmlTool {
 			former.transform(new DOMSource(xmldoc),
 					new StreamResult(new File(StaticValues.HOME_PATH + mail + "/task/tasks.xml")));
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -171,10 +190,18 @@ public class XmlTool {
 		for (int i = 0; i < nameList.getNames().size(); i++) {
 			Element taskNode = xmldoc.createElement("user");
 			Element id = xmldoc.createElement("id");
-			id.setTextContent(nameList.getNames().get(i).getId());
+			if (nameList.getNames().get(i).getId().equals("")) {
+				id.setTextContent(" ");
+			}else {
+				id.setTextContent(nameList.getNames().get(i).getId());
+			}
 			taskNode.appendChild(id);
 			Element name = xmldoc.createElement("name");
-			name.setTextContent(nameList.getNames().get(i).getName());
+			if (nameList.getNames().get(i).getName().equals("")) {
+				name.setTextContent(" ");
+			}else {
+				name.setTextContent(nameList.getNames().get(i).getName());
+			}
 			taskNode.appendChild(name);
 			root.appendChild(taskNode);
 		}
@@ -192,25 +219,45 @@ public class XmlTool {
 		dbf.setIgnoringElementContentWhitespace(false);
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		// 创建Document对象
-		Document xmldoc = db.parse(StaticValues.HOME_PATH + mail + "/doname/" + filename + ".xml");
+		Document xmldoc = db.parse(StaticValues.HOME_PATH + mail + "/task/doname/" + filename + ".xml");
 		// 获取根节点
 		Element root = xmldoc.getDocumentElement();
 		for (int i = 0; i < nameList.size(); i++) {
 			Element taskNode = xmldoc.createElement("user");
 			Element id = xmldoc.createElement("id");
-			id.setTextContent(nameList.get(i).getId());
+			if (nameList.get(i).getId().equals("")) {
+				id.setTextContent(" ");
+			}else {
+				id.setTextContent(nameList.get(i).getId());
+			}
 			taskNode.appendChild(id);
 			Element name = xmldoc.createElement("name");
-			name.setTextContent(nameList.get(i).getName());
+			if (nameList.get(i).getName().equals("")) {
+				name.setTextContent(" ");
+			}else {
+				name.setTextContent(nameList.get(i).getName());
+			}
 			taskNode.appendChild(name);
 			Element date = xmldoc.createElement("date");
-			name.setTextContent(nameList.get(i).getName());
+			if (nameList.get(i).getDate().equals("")) {
+				date.setTextContent(" ");
+			}else {
+				date.setTextContent(nameList.get(i).getDate());
+			}
 			taskNode.appendChild(date);
 			Element state = xmldoc.createElement("state");
-			name.setTextContent(nameList.get(i).getName());
+			if (nameList.get(i).getState().equals("")) {
+				state.setTextContent(" ");
+			}else {
+				state.setTextContent(nameList.get(i).getState());
+			}
 			taskNode.appendChild(state);
 			Element fileName = xmldoc.createElement("fileName");
-			name.setTextContent(nameList.get(i).getName());
+			if (nameList.get(i).getFileName().equals("")) {
+				fileName.setTextContent(" ");
+			}else {
+				fileName.setTextContent(nameList.get(i).getFileName());
+			}
 			taskNode.appendChild(fileName);
 			root.appendChild(taskNode);
 		}
@@ -218,7 +265,7 @@ public class XmlTool {
 		TransformerFactory factory = TransformerFactory.newInstance();
 		Transformer former = factory.newTransformer();
 		former.transform(new DOMSource(xmldoc),
-				new StreamResult(new File(StaticValues.HOME_PATH + mail + "/doname/" + filename + ".xml")));
+				new StreamResult(new File(StaticValues.HOME_PATH + mail + "/task/doname/" + filename + ".xml")));
 	}
 
 	public static List<Name> getNameList(String mail, String filename) {
@@ -264,7 +311,7 @@ public class XmlTool {
 				names.add(myname);
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 		return names;
 	}
@@ -282,7 +329,7 @@ public class XmlTool {
 			 * 创建文件对象
 			 */
 			DocumentBuilder db = dbf.newDocumentBuilder();// 创建解析器，解析XML文档
-			Document doc = db.parse(StaticValues.HOME_PATH + mail + "/doname/" + filename + ".xml"); // 使用dom解析xml文件
+			Document doc = db.parse(StaticValues.HOME_PATH + mail + "/task/doname/" + filename + ".xml"); // 使用dom解析xml文件
 			/*
 			 * 历遍列表，进行XML文件的数据提取
 			 */
@@ -321,7 +368,7 @@ public class XmlTool {
 				names.add(myname);
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 		return names;
 	}

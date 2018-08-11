@@ -118,7 +118,7 @@ public class AddController {
 						if (PluploadUtil.isUploadFinish(plupload)) {
 							insertServices.addShouJi(task);
 							File file = new File(
-									StaticValues.HOME_PATH + user.getMail() + "/doname/" + task.getId() + ".xml");
+									StaticValues.HOME_PATH + user.getMail() + "/task/doname/" + task.getId() + ".xml");
 							XmlTool.createXml(file, "userlist");
 							List<Name> names = XmlTool.getNameList(user.getMail(), task.getNameListName());
 							XmlTool.addNameState(user.getMail(), task.getId(), names);
@@ -134,12 +134,12 @@ public class AddController {
 				} catch (Exception e) {
 					try {
 						insertServices.addShouJi(task);
-						File floder = new File(StaticValues.HOME_PATH + user.getMail() + "/doname");
+						File floder = new File(StaticValues.HOME_PATH + user.getMail() + "/task/doname");
 						if (!floder.exists()) {
 							floder.mkdirs();
 						}
 						File file = new File(
-								StaticValues.HOME_PATH + user.getMail() + "/doname/" + task.getId() + ".xml");
+								StaticValues.HOME_PATH + user.getMail() + "/task/doname/" + task.getId() + ".xml");
 						file.createNewFile();
 						XmlTool.createXml(file, "userlist");
 						List<Name> names = XmlTool.getNameList(user.getMail(), task.getNameListName());

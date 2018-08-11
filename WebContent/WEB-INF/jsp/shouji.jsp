@@ -53,7 +53,7 @@
 											<li
 												class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-right pet_hd_list">
 												<div class="am-u-sm-10">
-													<a href="gotoShoujixiangxi" class="pet_hd_block">
+													<a href="gotoShoujixiangxi?id=${task.id}" class="pet_hd_block">
 														<div class="pet_hd_block_title">${task.title}</div>
 														<div class="pet_hd_block_map">${task.content}</div>
 														<div class="pet_hd_block_tag">
