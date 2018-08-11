@@ -57,14 +57,14 @@ public class XmlTool {
 			 * 创建文件对象
 			 */
 			DocumentBuilder db = dbf.newDocumentBuilder();// 创建解析器，解析XML文档
-			File file=new File(StaticValues.HOME_PATH + mail + "/task/tasks.xml");
+			File file = new File(StaticValues.HOME_PATH + mail + "/task/tasks.xml");
 			if (!file.exists()) {
 				new File(StaticValues.HOME_PATH + mail + "/task").mkdirs();
-				createXml(file,"tasks");
+				createXml(file, "tasks");
 			}
-			
+
 			Document doc = db.parse(StaticValues.HOME_PATH + mail + "/task/tasks.xml"); // 使用dom解析xml文件
-			
+
 			/*
 			 * 历遍列表，进行XML文件的数据提取
 			 */
@@ -99,9 +99,6 @@ public class XmlTool {
 							break;
 						case "nameListName":
 							task.setNameListName(value);
-							break;
-						case "fileName":
-							task.setFileName(value);
 							break;
 						}
 					}
@@ -188,6 +185,42 @@ public class XmlTool {
 				new StreamResult(new File(StaticValues.HOME_PATH + mail + "/namelist/" + filename + ".xml")));
 	}
 
+	// 新增收集群组 记录收集
+	public static void addNameState(String mail, String filename, List<Name> nameList) throws Exception {
+		// 创建文件工厂实例
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setIgnoringElementContentWhitespace(false);
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		// 创建Document对象
+		Document xmldoc = db.parse(StaticValues.HOME_PATH + mail + "/doname/" + filename + ".xml");
+		// 获取根节点
+		Element root = xmldoc.getDocumentElement();
+		for (int i = 0; i < nameList.size(); i++) {
+			Element taskNode = xmldoc.createElement("user");
+			Element id = xmldoc.createElement("id");
+			id.setTextContent(nameList.get(i).getId());
+			taskNode.appendChild(id);
+			Element name = xmldoc.createElement("name");
+			name.setTextContent(nameList.get(i).getName());
+			taskNode.appendChild(name);
+			Element date = xmldoc.createElement("date");
+			name.setTextContent(nameList.get(i).getName());
+			taskNode.appendChild(date);
+			Element state = xmldoc.createElement("state");
+			name.setTextContent(nameList.get(i).getName());
+			taskNode.appendChild(state);
+			Element fileName = xmldoc.createElement("fileName");
+			name.setTextContent(nameList.get(i).getName());
+			taskNode.appendChild(fileName);
+			root.appendChild(taskNode);
+		}
+		// 保存
+		TransformerFactory factory = TransformerFactory.newInstance();
+		Transformer former = factory.newTransformer();
+		former.transform(new DOMSource(xmldoc),
+				new StreamResult(new File(StaticValues.HOME_PATH + mail + "/doname/" + filename + ".xml")));
+	}
+
 	public static List<Name> getNameList(String mail, String filename) {
 		List<Name> names = new ArrayList<>();
 		/*
@@ -224,6 +257,63 @@ public class XmlTool {
 							break;
 						case "name":
 							myname.setName(value);
+							break;
+						}
+					}
+				}
+				names.add(myname);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return names;
+	}
+
+	public static List<Name> getNameStateList(String mail, String filename) {
+		List<Name> names = new ArrayList<>();
+		/*
+		 * 创建文件工厂实例
+		 */
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		// 如果创建的解析器在解析XML文档时必须删除元素内容中的空格，则为true，否则为false
+		dbf.setIgnoringElementContentWhitespace(true);
+		try {
+			/*
+			 * 创建文件对象
+			 */
+			DocumentBuilder db = dbf.newDocumentBuilder();// 创建解析器，解析XML文档
+			Document doc = db.parse(StaticValues.HOME_PATH + mail + "/doname/" + filename + ".xml"); // 使用dom解析xml文件
+			/*
+			 * 历遍列表，进行XML文件的数据提取
+			 */
+			// 根据节点名称来获取所有相关的节点
+			NodeList sonlist = doc.getElementsByTagName("user");
+			for (int i = 0; i < sonlist.getLength(); i++) // 循环处理对象
+			{
+				Name myname = new Name();
+				// 节点属性的处理
+				Element son = (Element) sonlist.item(i);
+				// 循环节点son内的所有子节点
+				for (Node node = son.getFirstChild(); node != null; node = node.getNextSibling()) {
+					// 判断是否为元素节点
+					if (node.getNodeType() == Node.ELEMENT_NODE) {
+						String name = node.getNodeName();
+						String value = node.getFirstChild().getNodeValue();
+						switch (name) {
+						case "id":
+							myname.setId(value);
+							break;
+						case "name":
+							myname.setName(value);
+							break;
+						case "date":
+							myname.setDate(value);
+							break;
+						case "state":
+							myname.setState(value);
+							break;
+						case "fileName":
+							myname.setFileName(value);
 							break;
 						}
 					}

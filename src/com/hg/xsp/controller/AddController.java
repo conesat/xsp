@@ -4,18 +4,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import com.hg.xsp.entity.Name;
 import com.hg.xsp.entity.NameList;
 import com.hg.xsp.entity.Plupload;
+import com.hg.xsp.entity.Task;
 import com.hg.xsp.entity.User;
+import com.hg.xsp.services.InsertServices;
 import com.hg.xsp.staticvalues.StaticValues;
+import com.hg.xsp.tools.Datetool;
+import com.hg.xsp.tools.FileOperation;
 import com.hg.xsp.tools.PluploadUtil;
 import com.hg.xsp.tools.XmlTool;
 
@@ -24,6 +29,19 @@ import net.sf.json.JSONObject;
 
 @Controller
 public class AddController {
+
+	@Autowired
+	private InsertServices insertServices;
+
+	/**
+	 * 添加用户组
+	 * 
+	 * @param request
+	 * @param userlist
+	 * @param name
+	 * @param response
+	 * @param change
+	 */
 	@RequestMapping(value = "addUserList", method = RequestMethod.POST)
 	public void gotomainpage(HttpServletRequest request, String userlist, String name, HttpServletResponse response,
 			String change) {
@@ -66,37 +84,74 @@ public class AddController {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	/**上传处理方法*/
-	@RequestMapping(value="addShouJi", method = RequestMethod.POST)
-	public void addShouJi(Plupload plupload,HttpServletRequest request, HttpServletResponse response,String title) {
+
+	/**
+	 * 新建收集
+	 * 
+	 * @param plupload
+	 * @param request
+	 * @param response
+	 * @param title
+	 */
+	@RequestMapping(value = "addShouJi", method = RequestMethod.POST)
+	public void addShouJi(Plupload plupload, HttpServletRequest request, HttpServletResponse response, Task task) {
 		User user = (User) request.getSession().getAttribute("user");
 		JSONObject json = new JSONObject();
-		System.out.println(title);
 		int re = 100;
 		if (user == null) {
-			re = 102;
+			re = 101;
 		} else {
-			plupload.setRequest(request);
-			//文件存储路径
-			File dir = new File(StaticValues.HOME_PATH+user.getMail()+"/task/dowork/"+title);
-			System.out.println(dir);
-			//System.out.println(dir.getPath());
-			try {
-				//上传文件
-				PluploadUtil.upload(plupload, dir);
-				//判断文件是否上传成功（被分成块的文件是否全部上传完成）
-				if (PluploadUtil.isUploadFinish(plupload)) {
+			task.setBegin(Datetool.getTimeNowThroughDate());
+			// 文件存储路径
+			File dir = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId());
+			if (dir.exists()) {
+				re = 102;
+			} else {
+				dir.mkdirs();
+				try {
+					MultipartHttpServletRequest test = (MultipartHttpServletRequest) request;
+					plupload.setRequest(request);
+					try {
+						// 上传文件
+						PluploadUtil.upload(plupload, dir);
+						// 判断文件是否上传成功（被分成块的文件是否全部上传完成）
+						if (PluploadUtil.isUploadFinish(plupload)) {
+							insertServices.addShouJi(task);
+							File file = new File(
+									StaticValues.HOME_PATH + user.getMail() + "/doname/" + task.getId() + ".xml");
+							XmlTool.createXml(file, "userlist");
+							List<Name> names = XmlTool.getNameList(user.getMail(), task.getNameListName());
+							XmlTool.addNameState(user.getMail(), task.getId(), names);
+							XmlTool.addTask(user.getMail(), task);
+						} else {
+							FileOperation.DeleteFolder(dir);
+							re = 103;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						re = 103;
+					}
+				} catch (Exception e) {
+					try {
+						insertServices.addShouJi(task);
+						File floder = new File(StaticValues.HOME_PATH + user.getMail() + "/doname");
+						if (!floder.exists()) {
+							floder.mkdirs();
+						}
+						File file = new File(
+								StaticValues.HOME_PATH + user.getMail() + "/doname/" + task.getId() + ".xml");
+						file.createNewFile();
+						XmlTool.createXml(file, "userlist");
+						List<Name> names = XmlTool.getNameList(user.getMail(), task.getNameListName());
+						XmlTool.addNameState(user.getMail(), task.getId(), names);
+						XmlTool.addTask(user.getMail(), task);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						re = 103;
+					}
 				}
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			
 		}
 		json.put("code", re);
 		try {
@@ -104,9 +159,7 @@ public class AddController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	
+
 	}
 
-	
 }

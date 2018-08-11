@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import com.hg.xsp.entity.Name;
-import com.hg.xsp.entity.Student;
 import com.hg.xsp.entity.Task;
 import com.hg.xsp.entity.User;
 import com.hg.xsp.services.SelectServices;
@@ -40,34 +39,6 @@ public class GotoController {
 		return "upload";
 	}
 
-	@RequestMapping(value = "upload", method = RequestMethod.POST)
-	public void uploadFile(MultipartFile file, HttpServletRequest request, String path, String name, String stu_id,
-			String open, HttpServletResponse response) throws IllegalStateException, IOException {
-		JSONObject json = new JSONObject();
-		path = "/root/�ĵ�/bgfile/tj/";
-		String fname = "���154��" + stu_id + name + "."
-				+ file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
-		if (!file.isEmpty()) {
-			// �ļ�����·��
-			String filePath = path + fname;
-			// ת���ļ�
-			file.transferTo(new File(filePath));
-			Student student = new Student();
-			student.setName(name);
-			student.setOpen(open);
-			student.setStu_id(stu_id);
-			student.setUrl(fname);
-			
-
-		} else {
-			json.put("code", 1);
-		}
-		try {
-			response.getWriter().print(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	@RequestMapping(value = "downLoad", method = RequestMethod.GET)
 	public void downLoad(String url, HttpServletResponse response, boolean isOnLine) throws Exception {
@@ -220,7 +191,6 @@ public class GotoController {
 			model.addAttribute("msg", "请先登录!");
 			return "index";
 		}
-
 	}
 
 	@RequestMapping(value = "gotoGuanliuser", method = RequestMethod.GET)
@@ -247,10 +217,13 @@ public class GotoController {
 	}
 
 	@RequestMapping(value = "gotoShoujixiangxi", method = RequestMethod.GET)
-	public String gotoShoujixiangxi(HttpServletRequest request, Model model) {
+	public String gotoShoujixiangxi(HttpServletRequest request, Model model,String id) {
 		User user = (User) request.getSession().getAttribute("user");
 		if (user != null) {
-
+			List<Name> names = XmlTool.getNameList(user.getMail(), id);
+			JSONArray jsonArray = JSONArray.fromObject(names);
+			model.addAttribute("name", id);
+			model.addAttribute("names", jsonArray);
 			return "shoujixiangxi";
 		} else {
 			model.addAttribute("msg", "请先登录!");

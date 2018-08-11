@@ -5,11 +5,11 @@ package com.hg.xsp.entity;
  *
  */
 public class Name {
-	private String id = "";// 提交文件所用的编号
-	private String name = "";// 登录所用的姓名
-	private String date = "";// 提交日期
-	private String state = "";// 提交状态
-	private String fileName = "";// 提交的文件名
+	private String id = "id";// 提交文件所用的编号
+	private String name = "name";// 登录所用的姓名
+	private String date = "未提交";// 提交日期
+	private String state = "未提交";// 提交状态
+	private String fileName = "未提交";// 提交的文件名
 	public Name() {
 		// TODO Auto-generated constructor stub
 	}
