@@ -7,4 +7,9 @@ public interface DeleteServices {
 	 * @param id
 	 */
 	public boolean deleteShouJi(String id);
+	
+	/**
+	 * 删除过期收集
+	 */
+	public void deleteShouJiOutTime(String endTime);
 }

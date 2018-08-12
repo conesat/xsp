@@ -290,7 +290,8 @@ background-size: 100%; width: 100%; height: 100%; bottom: 0; left: 0; z-index: 1
 .pet_hd_block_tag { width: 100%; font-size: 14px;}
 .pet_hd_block_tag span { display: inline-block; text-align: center; background: #f28d00; border-radius: 4px; width: 70px; height: 22px; line-height: 22px; color: #fff;}
 .pet_hd_block_tag span.hd_tag_jh { background: #00a0e9;}
-.pet_hd_block_tag span.hd_tag_js { background: #999999;}
+.pet_hd_block_tag span.hd_tag_js { background: #0dbb22;}
+.pet_hd_block_tag span.hd_tag_jr { background: #fd1818;}
 // 活动内页
 .pet_hd_con {width: 100%;}
 .pet_hd_con_head {width: 100%;}

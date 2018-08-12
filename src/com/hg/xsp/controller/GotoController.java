@@ -19,8 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hg.xsp.entity.Name;
 import com.hg.xsp.entity.Task;
 import com.hg.xsp.entity.User;
+import com.hg.xsp.services.InsertServices;
 import com.hg.xsp.services.SelectServices;
 import com.hg.xsp.staticvalues.StaticValues;
+import com.hg.xsp.tools.Datetool;
 import com.hg.xsp.tools.MyThread;
 import com.hg.xsp.tools.XmlTool;
 import net.sf.json.JSONArray;
@@ -28,9 +30,12 @@ import net.sf.json.JSONObject;
 
 @Controller
 public class GotoController {
-	
+
 	@Autowired
 	private SelectServices selectServices;
+
+	@Autowired
+	private InsertServices insertServices;
 
 	private MyThread myThread = null;
 
@@ -38,7 +43,6 @@ public class GotoController {
 	public String gotomainpage(HttpServletRequest request) {
 		return "upload";
 	}
-
 
 	@RequestMapping(value = "downLoad", method = RequestMethod.GET)
 	public void downLoad(String url, HttpServletResponse response, boolean isOnLine) throws Exception {
@@ -143,26 +147,13 @@ public class GotoController {
 
 		User user = (User) request.getSession().getAttribute("user");
 		if (user != null) {
+			Task task = new Task();
+			task.setEnd(Datetool.getTimeNowThroughDate());
+			task.setMail(user.getMail());
+			insertServices.addShouJi(task);
 			File dowork = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork");
-			File doname = new File(StaticValues.HOME_PATH + user.getMail() + "/task/doname");
 			if (!dowork.exists()) {
 				dowork.mkdirs();
-			}
-			if (!doname.exists()) {
-				doname.mkdirs();
-			} 
-			int num=selectServices.selectSJID();
-			String ID="";
-			if (num>10000) {
-				ID=num+"";
-			}else if (num>1000) {
-				ID="0"+num;
-			}else if (num>100) {
-				ID="00"+num;
-			}else if (num>10) {
-				ID="000"+num;
-			}else if (num>=0) {
-				ID="0000"+num;
 			}
 			List<String> names = new ArrayList<>();
 			File file = new File(StaticValues.HOME_PATH + user.getMail() + "/namelist"); // 获取其file对象
@@ -174,7 +165,7 @@ public class GotoController {
 				names.add(f.getName().split("\\.")[0]);
 			}
 			model.addAttribute("names", names);
-			model.addAttribute("ID", ID);
+			model.addAttribute("ID", task.getId());
 			return "xinjianshouji";
 		} else {
 			model.addAttribute("msg", "请先登录!");
@@ -213,18 +204,31 @@ public class GotoController {
 			model.addAttribute("names", names);
 			return "guanliuser";
 		}
-
 	}
 
 	@RequestMapping(value = "gotoShoujixiangxi", method = RequestMethod.GET)
-	public String gotoShoujixiangxi(HttpServletRequest request, Model model,String id) {
+	public String gotoShoujixiangxi(HttpServletRequest request, Model model, String id) {
 		User user = (User) request.getSession().getAttribute("user");
+		String endTime=null;
 		if (user != null) {
-			List<Name> names = XmlTool.getNameStateList(user.getMail(), id);
-			JSONArray jsonArray = JSONArray.fromObject(names);
-			model.addAttribute("name", id);
-			model.addAttribute("names", jsonArray);
-			return "shoujixiangxi";
+			try {
+				 endTime = selectServices.selectEndTime(id);
+			} catch (Exception e) {
+				model.addAttribute("msg", "数据异常!");
+				return "index";
+			}
+			if (endTime == null) {
+				model.addAttribute("msg", "该收集已过期!");
+				return "index";
+			} else {
+				List<Name> names = XmlTool.getNameStateList(new File(
+						StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + id + "/doname/namelist.xml"));
+				JSONArray jsonArray = JSONArray.fromObject(names);
+				model.addAttribute("id", id);
+				model.addAttribute("names", jsonArray);
+				model.addAttribute("endTime",endTime);
+				return "shoujixiangxi";
+			}
 		} else {
 			model.addAttribute("msg", "请先登录!");
 			return "index";

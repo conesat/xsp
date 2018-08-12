@@ -18,6 +18,7 @@ import com.hg.xsp.entity.Plupload;
 import com.hg.xsp.entity.Task;
 import com.hg.xsp.entity.User;
 import com.hg.xsp.services.InsertServices;
+import com.hg.xsp.services.UpDataServices;
 import com.hg.xsp.staticvalues.StaticValues;
 import com.hg.xsp.tools.Datetool;
 import com.hg.xsp.tools.FileOperation;
@@ -33,6 +34,9 @@ public class AddController {
 	@Autowired
 	private InsertServices insertServices;
 
+	@Autowired
+	private UpDataServices upDataServices;
+
 	/**
 	 * 添加用户组
 	 * 
@@ -47,6 +51,7 @@ public class AddController {
 			String change) {
 		User user = (User) request.getSession().getAttribute("user");
 		JSONObject json = new JSONObject();
+		System.out.println(name);
 		int re = 100;
 		if (user == null) {
 			re = 102;
@@ -72,6 +77,7 @@ public class AddController {
 					NameList nameList = new NameList(names, name);
 					XmlTool.addName(user.getMail(), name, nameList);
 				} catch (Exception e) {
+					e.printStackTrace();
 					file.delete();
 					re = 101;
 				}
@@ -101,13 +107,18 @@ public class AddController {
 		if (user == null) {
 			re = 101;
 		} else {
+			task.setMail(user.getMail());
 			task.setBegin(Datetool.getTimeNowThroughDate());
 			// 文件存储路径
 			File dir = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId());
 			if (dir.exists()) {
 				re = 102;
 			} else {
-				dir.mkdirs();
+				File floder = new File(
+						StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/doname");
+				if (!floder.exists()) {
+					floder.mkdirs();
+				}
 				try {
 					MultipartHttpServletRequest test = (MultipartHttpServletRequest) request;
 					plupload.setRequest(request);
@@ -116,37 +127,34 @@ public class AddController {
 						PluploadUtil.upload(plupload, dir);
 						// 判断文件是否上传成功（被分成块的文件是否全部上传完成）
 						if (PluploadUtil.isUploadFinish(plupload)) {
-							insertServices.addShouJi(task);
-							File file = new File(
-									StaticValues.HOME_PATH + user.getMail() + "/task/doname/" + task.getId() + ".xml");
+							upDataServices.upDataSJ(task);
+							File file = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/"
+									+ task.getId() + "/doname/namelist.xml");
 							XmlTool.createXml(file, "userlist");
 							List<Name> names = XmlTool.getNameList(user.getMail(), task.getNameListName());
-							XmlTool.addNameState(user.getMail(), task.getId(), names);
+							XmlTool.addNameState(file, names);
 							XmlTool.addTask(user.getMail(), task);
+
 						} else {
 							FileOperation.DeleteFolder(dir);
 							re = 103;
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
+						FileOperation.DeleteFolder(dir);
 						re = 103;
 					}
 				} catch (Exception e) {
 					try {
-						insertServices.addShouJi(task);
-						File floder = new File(StaticValues.HOME_PATH + user.getMail() + "/task/doname");
-						if (!floder.exists()) {
-							floder.mkdirs();
-						}
-						File file = new File(
-								StaticValues.HOME_PATH + user.getMail() + "/task/doname/" + task.getId() + ".xml");
+						upDataServices.upDataSJ(task);
+						File file = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId()
+								+ "/doname/namelist.xml");
 						file.createNewFile();
 						XmlTool.createXml(file, "userlist");
 						List<Name> names = XmlTool.getNameList(user.getMail(), task.getNameListName());
-						XmlTool.addNameState(user.getMail(), task.getId(), names);
+						XmlTool.addNameState(file, names);
 						XmlTool.addTask(user.getMail(), task);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 						re = 103;
 					}

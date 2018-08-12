@@ -309,6 +309,10 @@
 							$("#add_sj_ri").addClass("my_border_color_red");
 							$("#add_sj_sj").addClass("my_border_color_red");
 							showGotoDialog("时间不能小于当前", "");
+						} else if (getRemainderTime($('#add_sj_ri').val() + " "
+								+ $('#add_sj_sj').val(), 20)) {
+							$("#add_sj_ri").addClass("my_border_color_red");
+							showGotoDialog("时间不能超过20天", "");
 						} else if ($('#add_sj_qz').val() == '') {
 							$("#add_sj_qz").addClass("my_border_color_red");
 							showGotoDialog("请选择群租", "");
@@ -329,7 +333,7 @@
 									success : function(data) {
 										jsonData = JSON.parse(data);
 										if (jsonData.code == '100') {
-											showGotoDialog("创建完成", "");
+											showGotoDialog("创建完成", "gotoShouji");
 										} else if (jsonData.code == '101') {
 											showGotoDialog("账号已过期，请登录",
 													"gotoLogin");
@@ -352,6 +356,18 @@
 					});
 
 		});
+
+		function getRemainderTime(endTime, time) {
+			var s1 = new Date(endTime.replace(/-/g, "/")), s2 = new Date(), runTime = parseInt((s1
+					.getTime() - s2.getTime()) / 1000);
+			var past = false;
+			console.log(runTime+" "+s1+" "+s2+" "+Math.floor(runTime/60/60/24));
+			if (Math.floor(runTime/60/60/24) > time) {
+				past = true;
+			}
+			return past;
+
+		}
 
 		function reset_input_color() {
 			$("#add_sj_bt").removeClass("my_border_color_red");

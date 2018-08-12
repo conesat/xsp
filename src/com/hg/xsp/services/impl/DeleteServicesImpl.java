@@ -23,4 +23,9 @@ public class DeleteServicesImpl implements DeleteServices {
 
 	}
 
+	@Override
+	public void deleteShouJiOutTime(String endTime) {
+		deleteMapper.deleteShouJiOutTime(endTime);
+	}
+
 }

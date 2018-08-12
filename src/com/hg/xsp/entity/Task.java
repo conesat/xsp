@@ -9,6 +9,7 @@ public class Task {
 	private String end = "";// 结束时间
 	private String state = "";// 状态
 	private String nameListName = "";// 名单name
+	private String mail="";//创建者邮箱
 
 	public Task() {
 		// TODO Auto-generated constructor stub
@@ -70,13 +71,22 @@ public class Task {
 		this.nameListName = nameListName;
 	}
 
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
 	@Override
 	public String toString() {
 		return "Task [id=" + id + ", title=" + title + ", content=" + content + ", begin=" + begin + ", end=" + end
-				+ ", state=" + state + ", nameListName=" + nameListName + "]";
+				+ ", state=" + state + ", nameListName=" + nameListName + ", mail=" + mail + "]";
 	}
 
-	public Task(String id, String title, String content, String begin, String end, String state, String nameListName) {
+	public Task(String id, String title, String content, String begin, String end, String state, String nameListName,
+			String mail) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -85,6 +95,8 @@ public class Task {
 		this.end = end;
 		this.state = state;
 		this.nameListName = nameListName;
+		this.mail = mail;
 	}
+
 
 }

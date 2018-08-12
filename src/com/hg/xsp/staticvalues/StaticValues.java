@@ -4,7 +4,7 @@ public class StaticValues {
 	public static int cj = 0;
 	public static float cjtime = 0f;
 	public static boolean cjstate = false;
-	
+	public static int OUT_DAYS=3;//超时天数
 	public static String HOME_PATH="D:/xsp/user/";
 	//public static String HOME_PATH="/root/文档/xsp/user/";//linux
 	

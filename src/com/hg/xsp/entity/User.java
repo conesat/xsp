@@ -7,7 +7,7 @@ public class User {
 	private String mail = "";
 	
 	public User() {
-		// TODO Auto-generated constructor stub
+
 	}
 	
 	public int getId() {

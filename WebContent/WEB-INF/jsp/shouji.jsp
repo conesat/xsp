@@ -53,18 +53,34 @@
 											<li
 												class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-right pet_hd_list">
 												<div class="am-u-sm-10">
-													<a href="gotoShoujixiangxi?id=${task.id}" class="pet_hd_block">
+													<a href="gotoShoujixiangxi?id=${task.id}"
+														class="pet_hd_block">
 														<div class="pet_hd_block_title">${task.title}</div>
-														<div class="pet_hd_block_map">${task.content}</div>
-														<div class="pet_hd_block_tag">
-															<span class="hd_tag_jh">${task.state}</span> ${task.begin} -
-															${task.end}
-														</div>
+														<div class="pet_hd_block_map">${task.content}</div> <c:if
+															test="${task.state=='收集中'}">
+															<div class="pet_hd_block_tag">
+																<span class="hd_tag_jh">收集中</span> ${task.end}
+															</div>
+														</c:if> <c:if test="${task.state=='收集完成'}">
+															<div class="pet_hd_block_tag">
+																<span class="hd_tag_js">收集完成</span> ${task.end}
+															</div>
+														</c:if> <c:if test="${task.state=='已过期'}">
+															<div class="pet_hd_block_tag">
+																<span class="hd_tag_jr">已过期即将清除</span> ${task.end}
+															</div>
+														</c:if>
 													</a>
-												</div>
-												<div class="am-u-sm-2" align="right">
-													<a onclick="ewm('222')" class="am-icon-btn am-icon-qrcode"></a>
-												</div>
+												</div> <c:if test="${task.state=='收集中'}">
+													<div class="am-u-sm-2" align="right">
+														<a onclick="ewm('${task.id}')" class="am-icon-btn am-icon-qrcode"></a>
+													</div>
+												</c:if> <c:if test="${task.state=='收集完成'}">
+													<div class="am-u-sm-2" align="right">
+														<a onclick="dlo('${task.id}')" class="am-icon-btn am-icon-download"></a>
+													</div>
+												</c:if>
+
 											</li>
 										</c:forEach>
 

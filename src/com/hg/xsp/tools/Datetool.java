@@ -108,6 +108,13 @@ public class Datetool {
 			return -1;
 		}
 	}
+	
+	public static int getTimeBetweenDate(String date) {
+		int day=0;
+		long bet=new Date().getTime()-strringToDate(date).getTime();
+		day=(int)(bet/1000/60/60/24);
+		return day;
+	}
 
 	
 

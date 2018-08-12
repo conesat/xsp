@@ -3,8 +3,12 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hg.xsp.dao.DeleteMapper">
 	<delete id="deleteShouJi" parameterType="String">
-		delete form
-		shouji(id)
-		values(#{id});
+		DELETE FROM shouji WHERE
+		id=#{id};
+	</delete>
+
+	<delete id="deleteShouJiOutTime" parameterType="String">
+		DELETE FROM
+		shouji WHERE end_time&lt;=#{endTime};
 	</delete>
 </mapper>
