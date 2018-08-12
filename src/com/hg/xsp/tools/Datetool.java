@@ -6,16 +6,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 public class Datetool {
 	/**
 	 * 日期相加减天数
 	 * 
-	 * @param date
-	 *            如果为Null，则为当前时间
-	 * @param days
-	 *            加减天数
-	 * @param includeTime
-	 *            是否包括时分秒,true表示包含
+	 * @param date        如果为Null，则为当前时间
+	 * @param days        加减天数
+	 * @param includeTime 是否包括时分秒,true表示包含
 	 * @return
 	 * @throws ParseException
 	 */
@@ -89,7 +88,6 @@ public class Datetool {
 		Calendar cal = Calendar.getInstance();
 		return Integer.toString(cal.get(Calendar.DATE));
 	}
-	
 
 	/**
 	 * 获取两个日期间隔分钟
@@ -100,27 +98,26 @@ public class Datetool {
 		// 按照传入的格式生成一个simpledateformate对象
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String timeStr1 = sdf.format(new Date());;
+			String timeStr1 = sdf.format(new Date());
 			long date1 = sdf.parse(timeStr1).getTime();
 			long date2 = sdf.parse(date).getTime();
-			return (date1 - date2)/1000/60;
+			return (date1 - date2) / 1000 / 60;
 		} catch (Exception exception) {
 			return -1;
 		}
 	}
-	
+
 	public static int getTimeBetweenDate(String date) {
-		int day=0;
-		long bet=new Date().getTime()-strringToDate(date).getTime();
-		day=(int)(bet/1000/60/60/24);
+		int day = 0;
+		long bet = new Date().getTime() - strringToDate(date).getTime();
+		day = (int) (bet / 1000 / 60 / 60 / 24);
 		return day;
 	}
 
-	
 
 	/**
-	 * 取得两个时间段的时间间隔 return t2 与t1的间隔天数 throws ParseException
-	 * 如果输入的日期格式不是0000-00-00 格式抛出异常
+	 * 取得两个时间段的时间间隔 return t2 与t1的间隔天数 throws ParseException 如果输入的日期格式不是0000-00-00
+	 * 格式抛出异常
 	 */
 	public static int getBetweenDays(String t1, String t2) throws ParseException {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");

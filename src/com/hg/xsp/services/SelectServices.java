@@ -10,7 +10,7 @@ public interface SelectServices {
 	 * 获取正在进行的收集数量
 	 * @return 
 	 */
-	public int selectSJID();
+	public String selectSJMailById(String id);
 	
 	/**
 	 * 获取收集截止日期

@@ -118,13 +118,14 @@ public class AddController {
 						StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/doname");
 				if (!floder.exists()) {
 					floder.mkdirs();
+					new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId()+"/files").mkdir();
 				}
 				try {
 					MultipartHttpServletRequest test = (MultipartHttpServletRequest) request;
 					plupload.setRequest(request);
 					try {
 						// 上传文件
-						PluploadUtil.upload(plupload, dir);
+						PluploadUtil.upload(plupload, new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId()+"/files"));
 						// 判断文件是否上传成功（被分成块的文件是否全部上传完成）
 						if (PluploadUtil.isUploadFinish(plupload)) {
 							upDataServices.upDataSJ(task);

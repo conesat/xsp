@@ -53,7 +53,8 @@
 											<li
 												class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-right pet_hd_list">
 												<div class="am-u-sm-10">
-													<a href="gotoShoujixiangxi?id=${task.id}"
+													<a
+														href="gotoShoujixiangxi?id=${task.id}&state=${task.state}"
 														class="pet_hd_block">
 														<div class="pet_hd_block_title">${task.title}</div>
 														<div class="pet_hd_block_map">${task.content}</div> <c:if
@@ -67,17 +68,21 @@
 															</div>
 														</c:if> <c:if test="${task.state=='已过期'}">
 															<div class="pet_hd_block_tag">
-																<span class="hd_tag_jr">已过期即将清除</span> ${task.end}
+																<span class="hd_tag_jr"
+																	style="padding-right: 4px; padding-left: 4px; width: initial;">已过期即将清除</span>
+																${task.end}
 															</div>
 														</c:if>
 													</a>
 												</div> <c:if test="${task.state=='收集中'}">
 													<div class="am-u-sm-2" align="right">
-														<a onclick="ewm('${task.id}')" class="am-icon-btn am-icon-qrcode"></a>
+														<a onclick="ewm('${task.id}')"
+															class="am-icon-btn am-icon-qrcode"></a>
 													</div>
 												</c:if> <c:if test="${task.state=='收集完成'}">
 													<div class="am-u-sm-2" align="right">
-														<a onclick="dlo('${task.id}')" class="am-icon-btn am-icon-download"></a>
+														<a onclick="dlo('${task.id}')"
+															class="am-icon-btn am-icon-download"></a>
 													</div>
 												</c:if>
 
@@ -93,6 +98,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm1">
 		<div class="am-modal-dialog">
 			<div id="cz-name" class="am-modal-hd">扫码提交</div>
@@ -130,9 +136,9 @@
 		$input.val(location.href);
 
 		function ewm(sjma) {
-			makeCode('http://127.0.0.1:8020/xsp/shoujiye?sjma=' + sjma);
+			makeCode('http://www.chinahg.top/xsp/shoujiye?sjma=' + sjma);
 			$('#lianjie').html(
-					'http://127.0.0.1:8020/xsp/shoujiye?sjma=' + sjma);
+					'http://www.chinahg.top/xsp/shoujiye?sjma=' + sjma);
 			$('#my-confirm1').modal({
 				relatedTarget : this,
 				closeOnConfirm : true

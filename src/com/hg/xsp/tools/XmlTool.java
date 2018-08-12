@@ -102,7 +102,12 @@ public class XmlTool {
 							task.setEnd(value);
 							break;
 						case "state":
-							task.setState(value);
+							long time = Datetool.getMinOfDateToDate(task.getEnd());
+							if (value.equals("收集中") && time > 0) {
+								task.setState("已过期");
+							} else {
+								task.setState(value);
+							}
 							break;
 						case "nameListName":
 							task.setNameListName(value);
@@ -133,11 +138,6 @@ public class XmlTool {
 
 			Element taskNode = xmldoc.createElement("task");
 			taskNode.setAttribute("id", task.getId());
-			/*
-			 * Element id = xmldoc.createElement("id"); if (task.getId().equals("")) {
-			 * id.setTextContent(" "); } else { id.setTextContent(task.getId()); }
-			 * taskNode.appendChild(id);
-			 */
 			Element title = xmldoc.createElement("title");
 			if (task.getTitle().equals("")) {
 				title.setTextContent(" ");
@@ -189,8 +189,8 @@ public class XmlTool {
 	/**
 	 * 删除节点
 	 * 
-	 * @param mail     邮箱
-	 * @param id 收集id
+	 * @param mail 邮箱
+	 * @param id   收集id
 	 */
 	public static void delNode(String mail, String id) {
 
@@ -214,6 +214,64 @@ public class XmlTool {
 
 		} catch (Exception e) {
 		}
+
+	}
+
+	/**
+	 * 删除节点
+	 * 
+	 * @param mail 邮箱
+	 * @param id   收集id
+	 */
+	public static Task getTaskById(String mail, String id) {
+		Task task = new Task();
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setIgnoringElementContentWhitespace(true);
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document xmldoc = db.parse(new File(StaticValues.HOME_PATH + mail + "/task/tasks.xml"));
+			// 获取根节点
+			Element root = xmldoc.getDocumentElement();
+			Element son = (Element) selectSingleNode("/tasks/task[@id='" + id + "']", root);
+
+			task.setId(son.getAttribute("id"));
+			// 循环节点son内的所有子节点
+			for (Node node = son.getFirstChild(); node != null; node = node.getNextSibling()) {
+				// 判断是否为元素节点
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					String name = node.getNodeName();
+					String value = node.getFirstChild().getNodeValue();
+					switch (name) {
+					case "title":
+						task.setTitle(value);
+						break;
+					case "content":
+						task.setContent(value);
+						break;
+					case "begin":
+						task.setBegin(value);
+						break;
+					case "end":
+						task.setEnd(value);
+						break;
+					case "state":
+						long time = Datetool.getMinOfDateToDate(task.getEnd());
+						if (value.equals("收集中") && time > 0) {
+							task.setState("已过期");
+						} else {
+							task.setState(value);
+						}
+						break;
+					case "nameListName":
+						task.setNameListName(value);
+						break;
+					}
+
+				}
+			}
+		} catch (Exception e) {
+		}
+		return task;
 
 	}
 

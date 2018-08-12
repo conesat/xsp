@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
@@ -13,6 +14,15 @@
 <link rel="stylesheet" href="css/wap.css">
 <link rel="stylesheet" href="css/index.css" />
 <link rel="stylesheet" href="css/guanliuser.css" />
+<style type="text/css">
+.am-icon-btn {
+	width: 30px;
+	height: 30px;
+	font-size: 20px;
+	line-height: 30px;
+	background-color: #f5f5f5;
+}
+</style>
 <title>文件收集管理</title>
 </head>
 
@@ -31,10 +41,19 @@
 
 	</div>
 	<div class="am-panel am-panel-default xinjian-panel">
-		<div class="am-panel-hd">收集码：${id}</div>
+		<div class="am-panel-hd">
+			收集码：${id}
+			<div style="float: right;">
+				<c:if test="${state=='收集完成'}">
+					<span class="am-icon-btn am-icon-qrcode"></span>
+				</c:if>
+				<span style="color: #fd0808;" onclick="deleteShouji('${id}')" class="am-icon-btn am-icon-close"></span>
+			</div>
+		</div>
 		<div class="am-panel-bd">
 			<button class="am-btn am-btn-default am-btn-block" id='sj_end_time'
-				disabled="disabled" style="margin-bottom: 10px;">收集进行中 0天0小时0分 后截止</button>
+				disabled="disabled" style="margin-bottom: 10px;">收集进行中
+				0天0小时0分 后截止</button>
 			<div data-am-widget="tabs" class="am-tabs am-tabs-default">
 				<ul class="am-tabs-nav am-cf">
 					<li class="am-active"><a href="[data-tab-panel-0]"
@@ -74,8 +93,28 @@
 		</div>
 
 	</div>
-	<div class="pet_article_footer_info">Copyright(c)2018 hg All
-		Rights Reserved</div>
+	<div class="am-modal am-modal-confirm" tabindex="-1"
+		id="my-confirm-show">
+		<div class="am-modal-dialog">
+			<div class="am-modal-hd">提示</div>
+			<div class="am-modal-bd" id="dialog_title"></div>
+			<div class="am-modal-footer">
+				<span class="am-modal-btn" data-am-modal-cancel>取消</span> <span
+					class="am-modal-btn" data-am-modal-confirm>确定</span>
+			</div>
+		</div>
+	</div>
+	<div class="am-modal am-modal-confirm" tabindex="-1"
+		id="my-confirm-show-delete">
+		<div class="am-modal-dialog">
+			<div class="am-modal-hd">警告</div>
+			<div class="am-modal-bd" id="delete-dialog_title"></div>
+			<div class="am-modal-footer">
+				<span class="am-modal-btn" data-am-modal-cancel>取消</span> <span
+					class="am-modal-btn" data-am-modal-confirm>确定</span>
+			</div>
+		</div>
+	</div>
 	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm">
 		<div class="am-modal-dialog">
 			<div id="cz-name" class="am-modal-hd">重置提交</div>
@@ -88,6 +127,8 @@
 			</div>
 		</div>
 	</div>
+	<div class="pet_article_footer_info">Copyright(c)2018 hg All
+		Rights Reserved</div>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/amazeui.min.js"></script>
 	<script type="text/javascript">
@@ -155,7 +196,8 @@
 				var hour = Math.floor(runTime / 3600);
 				runTime = runTime % 3600;
 				var minute = Math.floor(runTime / 60);
-				$('#sj_end_time').html("收集进行中 "+day+"天"+hour+"小时"+minute+"分 后截止");
+				$('#sj_end_time').html(
+						"收集进行中 " + day + "天" + hour + "小时" + minute + "分 后截止");
 			}
 		}
 
@@ -176,6 +218,55 @@
 				}
 			});
 		};
+		
+		function deleteShouji(id) {
+			$('#delete-dialog_title').html("即将删除收集号为："+id+"的收集记录！删除后欧无法恢复！是否继续？");
+			$('#my-confirm-show-delete').modal({
+				relatedTarget : this,
+				onConfirm : function(options) {
+					$.ajax({
+						type : "post",
+						url : "deleteShouJi?id="+id,
+						async : false,
+						success : function(data) {
+							jsonData = JSON.parse(data);
+							if (jsonData.code == '100') {
+								showGotoDialog("删除完成", "gotoShouji");
+							} else if (jsonData.code == '101') {
+								showGotoDialog("账号已过期，请登录",
+										"gotoLogin");
+							} else {
+								showGotoDialog("删除失败", "gotoShouji");
+							}
+						},
+						error : function(jqObj) {
+							showGotoDialog("连接失败", "");
+						}
+					});
+				},
+				onCancel : function() {
+					return true;
+				}
+			});
+		}
+		
+		function showGotoDialog(msg, url) {
+			$('#dialog_title').html(msg);
+			$('#my-confirm-show').modal({
+				relatedTarget : this,
+				onConfirm : function(options) {
+					if (url != "") {
+						window.location.href = url;
+					} else {
+						return true;
+					}
+				},
+				onCancel : function() {
+					return true;
+				}
+			});
+		}
+		
 	</script>
 </body>
 

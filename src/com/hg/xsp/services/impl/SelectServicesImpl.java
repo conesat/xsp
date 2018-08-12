@@ -26,15 +26,14 @@ public class SelectServicesImpl implements SelectServices {
 	private DeleteServices deleteServices;
 
 	@Override
-	public int selectSJID() {
-		return selectMapper.selectSJID();
+	public String selectSJMailById(String id) {
+		return selectMapper.selectSJMailById(id);
 	}
 
 	@Override
 	public String selectEndTime(String id) {
 		String endTime = selectMapper.selectEndTime(id);
 		int time = Datetool.getTimeBetweenDate(endTime);
-		//System.out.println(time + "  time");
 		selectSJIDOutTime();
 		if (time > StaticValues.OUT_DAYS) {
 			return null;

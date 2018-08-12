@@ -25,16 +25,8 @@
 				<li><a href="gotoIndex"><span
 						class="am-icon-home am-icon-sm"></span> 学生派首页</a></li>
 
-				<li class="am-dropdown" data-am-dropdown><a
-					class="am-dropdown-toggle" data-am-dropdown-toggle
-					href="javascript:;"> 菜单 <span class="am-icon-caret-down"></span>
-				</a>
-					<ul class="am-dropdown-content">
-						<li><a href="#">关于学生派</a></li>
-						<li><a href="#">客户端下载</a></li>
-						<li class="am-divider"></li>
-						<li><a href="#">捐助</a></li>
-					</ul></li>
+				<li><a href="gotoAbout"><span
+						class="am-icon-home am-icon-sm"></span> 关于</a></li>
 			</ul>
 			</header>
 		</div>
@@ -153,7 +145,7 @@
 	<script src="js/jquery.min.js"></script>
 	<script src="js/amazeui.min.js"></script>
 	<script>
-	var msg = '${msg}';
+		var msg = '${msg}';
 		$(function() {
 			if (msg != '') {
 				showDialog(msg);
@@ -182,8 +174,8 @@
 										showDialog("用户不存在");
 									} else if (jsonData.code == '102') {
 										showDialog("密码错误");
-									} else{
-										window.location.href='gotoIndex';
+									} else {
+										window.location.href = 'gotoIndex';
 									}
 								},
 								error : function(jqObj) {
@@ -222,7 +214,7 @@
 									$("#register_name").addClass(
 											"my_border_color_red");
 								} else if ($('#register_code').val() == '') {
-									
+
 									showDialog("请填写验证码！");
 									$("#register_code").addClass(
 											"my_border_color_red");

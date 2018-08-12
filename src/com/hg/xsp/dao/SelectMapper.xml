@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hg.xsp.dao.SelectMapper">
-	<select id="selectSJID" resultType="int">
-		SELECT id+1 FROM shouji ORDER
-		BY id DESC LIMIT 1;
+	<select id="selectSJMailById" resultType="String">
+		SELECT mail FROM shouji where
+		id=#{id};
 	</select>
 
 	<select id="selectSJByMailAndID" resultType="int"
@@ -12,14 +12,15 @@
 		SELECT count(*) FROM shouji where id=#{id} and
 		mail=#{mail};
 	</select>
-	
+
 	<select id="selectEndTime" resultType="String"
 		parameterType="String">
 		SELECT end_time FROM shouji where id=#{id};
 	</select>
-	
-	<select id="selectSJIDOutTime" resultType="com.hg.xsp.entity.Task"
-		parameterType="String">
-		SELECT * FROM shouji WHERE end_time&lt;=#{endTime};
+
+	<select id="selectSJIDOutTime"
+		resultType="com.hg.xsp.entity.Task" parameterType="String">
+		SELECT * FROM shouji
+		WHERE end_time&lt;=#{endTime};
 	</select>
 </mapper>

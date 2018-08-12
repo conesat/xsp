@@ -114,9 +114,18 @@ public class GotoController {
 	 */
 	@RequestMapping(value = "gotoLogin", method = RequestMethod.GET)
 	public String gotoLogin(HttpServletRequest request, Model model) {
+		request.getSession().removeAttribute("user");
 		return "login";
 	}
 
+	
+	
+	
+	@RequestMapping(value = "gotoAbout", method = RequestMethod.GET)
+	public String gotoAbout(HttpServletRequest request, Model model) {
+		return "about";
+	}
+	
 	@RequestMapping(value = "gotoIndex", method = RequestMethod.GET)
 	public String gotoIndex(HttpServletRequest request, Model model) {
 		User user = (User) request.getSession().getAttribute("user");
@@ -174,14 +183,22 @@ public class GotoController {
 	}
 
 	@RequestMapping(value = "gotoShoujiye", method = RequestMethod.GET)
-	public String gotoShoujiye(HttpServletRequest request, Model model) {
-		User user = (User) request.getSession().getAttribute("user");
-		if (user != null) {
-			return "shoujiye";
+	public String gotoShoujiye(HttpServletRequest request, Model model, String id) {
+
+		String mail = selectServices.selectSJMailById(id);
+		if (mail == null) {
+			model.addAttribute("msg", id + " 收集号不存在");
 		} else {
-			model.addAttribute("msg", "请先登录!");
-			return "index";
+			Task task = XmlTool.getTaskById(mail, id);
+			if (task == null) {
+				model.addAttribute("msg", id + " 数据异常");
+			} else {
+				model.addAttribute("task", task);
+				return "shoujiye";
+			}
 		}
+
+		return "index";
 	}
 
 	@RequestMapping(value = "gotoGuanliuser", method = RequestMethod.GET)
@@ -207,12 +224,12 @@ public class GotoController {
 	}
 
 	@RequestMapping(value = "gotoShoujixiangxi", method = RequestMethod.GET)
-	public String gotoShoujixiangxi(HttpServletRequest request, Model model, String id) {
+	public String gotoShoujixiangxi(HttpServletRequest request, Model model, String id, String state) {
 		User user = (User) request.getSession().getAttribute("user");
-		String endTime=null;
+		String endTime = null;
 		if (user != null) {
 			try {
-				 endTime = selectServices.selectEndTime(id);
+				endTime = selectServices.selectEndTime(id);
 			} catch (Exception e) {
 				model.addAttribute("msg", "数据异常!");
 				return "index";
@@ -226,7 +243,8 @@ public class GotoController {
 				JSONArray jsonArray = JSONArray.fromObject(names);
 				model.addAttribute("id", id);
 				model.addAttribute("names", jsonArray);
-				model.addAttribute("endTime",endTime);
+				model.addAttribute("endTime", endTime);
+				model.addAttribute("state", state);
 				return "shoujixiangxi";
 			}
 		} else {

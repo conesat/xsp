@@ -9,7 +9,7 @@ public interface SelectMapper {
 	 * 获取id
 	 * @return
 	 */
-	public int selectSJID();
+	public String selectSJMailById(String id);
 	
 	/**
 	 * 根据mail和ID判断是否存在收集

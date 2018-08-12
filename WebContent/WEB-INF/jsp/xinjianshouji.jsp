@@ -242,8 +242,8 @@
 							'BeforeUpload',
 							function(uploader, files) {
 								uploader.settings.url = '${pageContext.request.contextPath}/addShouJi?id='
-										+ $('#add_sj_id').val()
-										+ "&title"
+										+ $('#add_sj_id').html()
+										+ "&title="
 										+ $('#add_sj_bt').val()
 										+ "&content="
 										+ $('#add_sj_nr').val()

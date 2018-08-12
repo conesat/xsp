@@ -66,7 +66,7 @@
 				<li><a href="" class="  pet_nav_mengzhuanti icon-zhoubian"></a><span>周边</span></li>
 				<li><a href="" class="  pet_nav_meirong icon-dongtai"></a><span>动态</span></li>
 				<li><a href="" class="  pet_nav_yiyuan icon-banji"></a><span>班级</span></li>
-				<li><a href="" class="  pet_nav_dianpu icon-guanyu"></a><span>关于</span></li>
+				<li><a href="gotoAbout" class="  pet_nav_dianpu icon-guanyu"></a><span>关于</span></li>
 			</ul>
 			<blockquote>
 				<p class="my_blockquote">软件开发学习资料</p>
@@ -74,8 +74,7 @@
 			<ul class="pet_circle_nav_list">
 				<li><a href="gotoShouji"
 					class="  pet_nav_xinxianshi icon-anzhuo"></a><span>安卓</span></li>
-				<li><a id="#"
-					class="pet_nav_zhangzhishi icon-java"></a><span>java</span></li>
+				<li><a id="#" class="pet_nav_zhangzhishi icon-java"></a><span>java</span></li>
 				<li><a href="#" class="  pet_nav_kantuya icon-java_web"></a><span>jee</span></li>
 				<li><a href="#" class="  pet_nav_mengzhuanti icon-qianduan"></a><span>前端</span></li>
 				<li><a href="#" class="  pet_nav_meirong icon-c_c"></a><span>c/c++</span></li>
@@ -85,10 +84,9 @@
 				<p class="my_blockquote">帮助我们</p>
 			</blockquote>
 			<ul class="pet_circle_nav_list">
-				<li><a id="juanzhu"
-					class="pet_nav_xinxianshi icon-renminbi"></a><span>捐助作者</span></li>
-				<li><a id=""
-					class="pet_nav_zhangzhishi icon-jiaruwomen"></a><span>加入我们</span></li>
+				<!-- <li><a id="juanzhu"
+					class="pet_nav_xinxianshi icon-renminbi"></a><span>捐助作者</span></li> -->
+				<li><a id="" class="pet_nav_zhangzhishi icon-jiaruwomen"></a><span>加入我们</span></li>
 				<li><a href="#" class="  pet_nav_kantuya icon-lianxiwomen"></a><span>联系我们</span></li>
 			</ul>
 		</div>
@@ -112,7 +110,8 @@
 				Rights Reserved</div>
 		</div>
 	</div>
-	<div class="am-modal am-modal-alert" tabindex="-1" id="my-alert" style="top: 10%">
+	<div class="am-modal am-modal-alert" tabindex="-1" id="my-alert"
+		style="top: 10%">
 		<div class="am-modal-dialog">
 			<div class="am-panel am-panel-default">
 				<div class="am-panel-hd">您的支持使我们最大的动力</div>
@@ -153,8 +152,9 @@
 			<div class="am-modal-hd">提交文件</div>
 			<div class="am-modal-bd">
 				<p>
-					<input type="text" class="am-form-field am-radius"
-						placeholder="输入收集码" />
+					<input onkeyup="this.value=this.value.replace(/[^0-9-]+/,'');"
+						maxlength="5" type="text" class="am-form-field am-radius"
+						style="text-align: center;" id='s_j_m' placeholder="输入收集码" />
 				</p>
 			</div>
 			<div class="am-modal-footer">
@@ -223,21 +223,40 @@
 					window.location.href = "gotoLogin";
 				}
 			});
-			$('#doc-modal-list').find('.am-icon-close').add(
-					'#doc-confirm-toggle').on('click', function() {
-				$('#my-confirm').modal({
-					relatedTarget : this,
-					onConfirm : function(options) {
-						window.location.href = "gotoShoujiye";
-					},
-					onCancel : function() {
+			$('#doc-modal-list')
+					.find('.am-icon-close')
+					.add('#doc-confirm-toggle')
+					.on(
+							'click',
+							function() {
 
-					}
-				});
-			});
+								$('#my-confirm')
+										.modal(
+												{
+													relatedTarget : this,
+													onConfirm : function(
+															options) {
+														if ($('#s_j_m').val() == '') {
+															showDialog("请输入收集号");
+														} else if ($('#s_j_m')
+																.val() < 10000) {
+															showDialog("不合法收集号");
+														} else {
+															window.location.href = "gotoShoujiye?id="
+																	+ $(
+																			'#s_j_m')
+																			.val();
+														}
+
+													},
+													onCancel : function() {
+
+													}
+												});
+							});
 
 		});
-		$('#juanzhu').on('click',function(){
+		$('#juanzhu').on('click', function() {
 			$('#my-alert').modal({
 				relatedTarget : this,
 				onConfirm : function(options) {
@@ -248,7 +267,7 @@
 				}
 			});
 		});
-		
+
 		function showDialog(msg) {
 			$('#dialog_title').html(msg);
 			$('#my-confirm3').modal({
