@@ -214,8 +214,42 @@
 
 			//上传成功触发，ps:data是返回值（第三个参数是返回值）
 			uploader.bind('FileUploaded', function(uploader, files, data) {
+				
+				$.ajax({
+					type : "post",
+					url : "addShouJi",
+					async : false,
+					data : {
+						title : $('#add_sj_bt').val(),
+						id : $('#add_sj_id').html(),
+						content : $('#add_sj_nr').val(),
+						end : $('#add_sj_ri').val() + " "
+								+ $('#add_sj_sj').val(),
+						chang:'yes',
+						nameListName : $('#add_sj_qz').val()
+					},
+					success : function(data) {
+						jsonData = JSON.parse(data);
+						if (jsonData.code == '100') {
+							showGotoDialog("创建完成", "gotoShouji");
+						} else if (jsonData.code == '101') {
+							showGotoDialog("账号已过期，请登录",
+									"gotoLogin");
+						} else if (jsonData.code == '102') {
+							$("#add_sj_bt").addClass(
+									"my_border_color_red");
+							showGotoDialog("任务标题已存在", "");
+						} else {
+							showGotoDialog("创建失败", "");
+						}
+					},
+					error : function(jqObj) {
+						showGotoDialog("连接失败", "");
+					}
+				});
+				
 				$('#add_sj_jd').width(100);
-				var jsonData = JSON.parse(data.response);
+				/* var jsonData = JSON.parse(data.response);
 				uploader.files.splice(0, uploader.files.length);
 				if (jsonData.code == '100') {
 					showGotoDialog("创建完成", "");
@@ -229,7 +263,7 @@
 					showGotoDialog("任务标题已存在,请重新选择文件", "");
 				} else {
 					showGotoDialog("创建失败", "");
-				}
+				} */
 				showFils();
 				$('#add_sj_jd').width(0);
 			});
@@ -242,17 +276,7 @@
 							'BeforeUpload',
 							function(uploader, files) {
 								uploader.settings.url = '${pageContext.request.contextPath}/addShouJi?id='
-										+ $('#add_sj_id').html()
-										+ "&title="
-										+ $('#add_sj_bt').val()
-										+ "&content="
-										+ $('#add_sj_nr').val()
-										+ "&end="
-										+ $('#add_sj_ri').val()
-										+ " "
-										+ $('#add_sj_sj').val()
-										+ "&nameListName="
-										+ $('#add_sj_qz').val();
+										+ $('#add_sj_id').html();
 							});
 
 			//绑定各种事件，并在事件监听函数中做你想做的事
@@ -398,7 +422,7 @@
 			return false;
 		}
 
-		function showGotoDialog(msg, url) {
+		function showGotoDialog(msg,url) {
 			$('#dialog_title').html(msg);
 			$('#my-confirm-show').modal({
 				relatedTarget : this,
