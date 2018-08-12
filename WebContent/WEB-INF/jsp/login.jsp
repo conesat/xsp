@@ -26,7 +26,7 @@
 						class="am-icon-home am-icon-sm"></span> 学生派首页</a></li>
 
 				<li><a href="gotoAbout"><span
-						class="am-icon-home am-icon-sm"></span> 关于</a></li>
+						class="icon-guanyu am-icon-sm"></span> 关于</a></li>
 			</ul>
 			</header>
 		</div>

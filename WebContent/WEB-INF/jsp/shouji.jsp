@@ -99,7 +99,7 @@
 		</div>
 	</div>
 
-	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm1">
+	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm1" style="top: 20%;">
 		<div class="am-modal-dialog">
 			<div id="cz-name" class="am-modal-hd">扫码提交</div>
 			<div class="am-modal-bd">
@@ -136,9 +136,9 @@
 		$input.val(location.href);
 
 		function ewm(sjma) {
-			makeCode('http://www.chinahg.top/xsp/shoujiye?sjma=' + sjma);
+			makeCode('http://www.chinahg.top/xsp/gotoShoujiye?id=' + sjma);
 			$('#lianjie').html(
-					'http://www.chinahg.top/xsp/shoujiye?sjma=' + sjma);
+					'http://www.chinahg.top/xsp/gotoShoujiye?id=' + sjma);
 			$('#my-confirm1').modal({
 				relatedTarget : this,
 				closeOnConfirm : true

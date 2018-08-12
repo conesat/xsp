@@ -38,18 +38,17 @@
 			<ul class="am-slides">
 				<li><img src="img/fl01.png">
 					<div class="pet_slider_font">
-						<span class="pet_slider_emoji"> 学生派 </span> <span>学生派开发准备阶段</span>
+						<span class="pet_slider_emoji"> 学生派 </span> <span>学生派玩命开发中</span>
 					</div>
 					<div class="pet_slider_shadow"></div></li>
 				<li><img src="img/fl02.png">
 					<div class="pet_slider_font">
-						<span class="pet_slider_emoji"> 红格要闻 </span> <span>手机app“托儿
-							”进入设计阶段</span>
+						<span class="pet_slider_emoji"> 关注微信公众号 </span> <span>学生派xps</span>
 					</div>
 					<div class="pet_slider_shadow"></div></li>
 				<li><img src="img/fl03.png">
 					<div class="pet_slider_font">
-						<span class="pet_slider_emoji"> </span> <span>《星际争霸2:虚空之遗》国服过审!</span>
+						<span class="pet_slider_emoji"> 谁能帮帮狗子</span> <span>狗子已经快废了</span>
 					</div>
 					<div class="pet_slider_shadow"></div></li>
 			</ul>
@@ -66,7 +65,7 @@
 				<li><a href="" class="  pet_nav_mengzhuanti icon-zhoubian"></a><span>周边</span></li>
 				<li><a href="" class="  pet_nav_meirong icon-dongtai"></a><span>动态</span></li>
 				<li><a href="" class="  pet_nav_yiyuan icon-banji"></a><span>班级</span></li>
-				<li><a href="gotoAbout" class="  pet_nav_dianpu icon-guanyu"></a><span>关于</span></li>
+					<li><a href="gotoAbout" class="pet_nav_dianpu icon-guanyu"></a><span>关于</span></li>
 			</ul>
 			<blockquote>
 				<p class="my_blockquote">软件开发学习资料</p>
