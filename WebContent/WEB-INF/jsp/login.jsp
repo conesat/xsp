@@ -175,7 +175,7 @@
 									} else if (jsonData.code == '102') {
 										showDialog("密码错误");
 									} else {
-										window.location.href = 'gotoIndex';
+										window.location.href = 'gotoAbout';
 									}
 								},
 								error : function(jqObj) {
