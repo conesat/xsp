@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
@@ -47,12 +48,28 @@
 				</div>
 				<div class="am-form-group am-form-group-sm">
 					<label for="doc-ipt-3-1" class="am-u-sm-2 am-form-label xjsj-label">附件</label>
+
 					<div class="am-u-sm-10">
 						<div class="am-form-group">
 							<div class="am-form-group am-form-file">
-								<button type="button" class="am-btn am-btn-default am-btn-sm">
-									<i class="am-icon-cloud-download"></i>下载附件
-								</button>
+								<c:if test="${empty files}">
+									<div style="padding: 10px;" align="center">无附件</div>
+								</c:if>
+								<c:if test="${not empty files}">
+									<c:forEach items="${files}" var="file" varStatus="status">
+										<div style="padding: 5px;">
+											<span style="display: block; width: 60%; float: left;">${file.name}</span>
+											<a href="downLoadFile?file=${file.path}">
+												<button style="float: right;" type="button"
+													class="am-btn am-btn-default am-btn-sm">
+													<i class="am-icon-cloud-download"></i>下载
+												</button>
+											</a>
+
+										</div>
+										<hr style="clear: both;">
+									</c:forEach>
+								</c:if>
 							</div>
 						</div>
 					</div>
@@ -232,7 +249,7 @@
 						"收集进行中 " + day + "天" + hour + "小时" + minute + "分 后截止");
 			}
 		}
-
+		
 		$('#tj_sj_submit').on('click', function() {
 			reset_input_color();
 			if ($('#tj_sj_name').val() == '') {

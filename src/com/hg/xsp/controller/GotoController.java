@@ -16,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.hg.xsp.entity.FJFile;
 import com.hg.xsp.entity.Name;
 import com.hg.xsp.entity.Task;
 import com.hg.xsp.entity.User;
@@ -90,24 +92,7 @@ public class GotoController {
 		}
 	}
 
-	@RequestMapping(value = "downLoadwd", method = RequestMethod.GET)
-	public void downLoadwd(String type, HttpServletResponse response, boolean isOnLine) throws Exception {
-		File f = new File("/root/�ĵ�/bgfile/" + type + ".doc");
-		String fileName = f.getName();
-		InputStream inStream = new FileInputStream(f);
-		response.reset();
-		response.setContentType("bin");
-		response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "UTF-8"));
-		byte[] b = new byte[100];
-		int len;
-		try {
-			while ((len = inStream.read(b)) > 0)
-				response.getOutputStream().write(b, 0, len);
-			inStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	
 
 	/**
 	 * 新
@@ -184,11 +169,19 @@ public class GotoController {
 
 	@RequestMapping(value = "gotoShoujiye", method = RequestMethod.GET)
 	public String gotoShoujiye(HttpServletRequest request, Model model, String id) {
-
 		String mail = selectServices.selectSJMailById(id);
 		if (mail == null) {
 			model.addAttribute("msg", id + " 收集号不存在");
 		} else {
+			File file=new File(StaticValues.HOME_PATH+mail+"/task/dowork/"+id+"/files");
+			if (file.exists()) {
+				File[] files=file.listFiles();
+				List<FJFile> fList=new ArrayList<>();
+				for (int j = 0; j < files.length; j++) {
+					fList.add(new FJFile(files[j].getName(), files[j].getAbsolutePath()));
+				}
+				model.addAttribute("files", fList);
+			}
 			Task task = XmlTool.getTaskById(mail, id);
 			if (task == null) {
 				model.addAttribute("msg", id + " 数据异常");

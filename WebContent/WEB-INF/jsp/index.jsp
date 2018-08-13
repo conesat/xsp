@@ -20,6 +20,7 @@
 	<div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
 		<a href="#top" title=""> <img class="am-gotop-icon-custom"
 			src="img/goTop.png" />
+			TOP
 		</a>
 	</div>
 

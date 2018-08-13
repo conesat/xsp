@@ -101,8 +101,7 @@ public class AddController {
 	 * @param title
 	 */
 	@RequestMapping(value = "addShouJi", method = RequestMethod.POST)
-	public void addShouJi(Plupload plupload, HttpServletRequest request, HttpServletResponse response, Task task,
-			String chang) {
+	public void addShouJi(Plupload plupload, HttpServletRequest request, HttpServletResponse response, Task task) {
 		User user = (User) request.getSession().getAttribute("user");
 		JSONObject json = new JSONObject();
 		int re = 100;
@@ -113,14 +112,49 @@ public class AddController {
 			task.setBegin(Datetool.getTimeNowThroughDate());
 			// 文件存储路径
 			File dir = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId());
-			if (dir.exists() && chang==null) {
+			if (dir.exists()) {
 				re = 102;
 			} else {
-				if (chang!=null) {
+				File floder = new File(
+						StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/doname");
+				if (!floder.exists()) {
+					floder.mkdirs();
+					new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/files")
+							.mkdir();
+				}
+				try {
+					MultipartHttpServletRequest test = (MultipartHttpServletRequest) request;
+					plupload.setRequest(request);
+					try {
+						task.setTitle(new String(task.getTitle().getBytes("ISO8859-1"),"UTF-8"));
+						task.setContent(new String(task.getContent().getBytes("ISO8859-1"),"UTF-8"));
+						task.setNameListName(new String(task.getNameListName().getBytes("ISO8859-1"),"UTF-8"));
+						// 上传文件
+						PluploadUtil.upload(plupload, new File(
+								StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/files"));
+						// 判断文件是否上传成功（被分成块的文件是否全部上传完成）
+						if (PluploadUtil.isUploadFinish(plupload)) {
+							upDataServices.upDataSJ(task);
+							File file = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/"
+									+ task.getId() + "/doname/namelist.xml");
+							XmlTool.createXml(file, "userlist");
+							List<Name> names = XmlTool.getNameList(user.getMail(), task.getNameListName());
+							XmlTool.addNameState(file, names);
+							XmlTool.addTask(user.getMail(), task);
+						} else {
+							FileOperation.DeleteFolder(dir);
+							re = 103;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						FileOperation.DeleteFolder(dir);
+						re = 103;
+					}
+				} catch (Exception e) {
 					try {
 						upDataServices.upDataSJ(task);
-						File file = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/"
-								+ task.getId() + "/doname/namelist.xml");
+						File file = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId()
+								+ "/doname/namelist.xml");
 						file.createNewFile();
 						XmlTool.createXml(file, "userlist");
 						List<Name> names = XmlTool.getNameList(user.getMail(), task.getNameListName());
@@ -130,54 +164,7 @@ public class AddController {
 						e1.printStackTrace();
 						re = 103;
 					}
-				} else {
-					File floder = new File(
-							StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/doname");
-					if (!floder.exists()) {
-						floder.mkdirs();
-						new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/files")
-								.mkdir();
-					}
-					try {
-						MultipartHttpServletRequest test = (MultipartHttpServletRequest) request;
-						plupload.setRequest(request);
-						try {
-							// 上传文件
-							PluploadUtil.upload(plupload, new File(StaticValues.HOME_PATH + user.getMail()
-									+ "/task/dowork/" + task.getId() + "/files"));
-							// 判断文件是否上传成功（被分成块的文件是否全部上传完成）
-							if (PluploadUtil.isUploadFinish(plupload)) {
-							//	upDataServices.upDataSJ(task);
-							//	File file = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/"
-							//			+ task.getId() + "/doname/namelist.xml");
-							//	XmlTool.createXml(file, "userlist");
-							//	List<Name> names = XmlTool.getNameList(user.getMail(), task.getNameListName());
-							//	XmlTool.addNameState(file, names);
-							//	XmlTool.addTask(user.getMail(), task);
-							} else {
-								FileOperation.DeleteFolder(dir);
-								re = 103;
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-							FileOperation.DeleteFolder(dir);
-							re = 103;
-						}
-					} catch (Exception e) {
-						try {
-							upDataServices.upDataSJ(task);
-							File file = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/"
-									+ task.getId() + "/doname/namelist.xml");
-							file.createNewFile();
-							XmlTool.createXml(file, "userlist");
-							List<Name> names = XmlTool.getNameList(user.getMail(), task.getNameListName());
-							XmlTool.addNameState(file, names);
-							XmlTool.addTask(user.getMail(), task);
-						} catch (Exception e1) {
-							e1.printStackTrace();
-							re = 103;
-						}
-					}
+
 				}
 			}
 		}
