@@ -4,6 +4,6 @@
 - 定时结束 打包文件转发至制定邮箱
 
 预览:
-[地址](http://www.chinahg.top/xsp/gotoIndex)
+[访问地址](http://www.chinahg.top/xsp/gotoIndex)
 
 [![微云视频](https://github.com/conesat/xsp/blob/master/rec/rev.PNG)](https://share.weiyun.com/5lZ8CQF)
