@@ -19,8 +19,7 @@
 <body>
 	<div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
 		<a href="#top" title=""> <img class="am-gotop-icon-custom"
-			src="img/goTop.png" />
-			TOP
+			src="img/goTop.png" /> TOP
 		</a>
 	</div>
 
@@ -66,19 +65,18 @@
 				<li><a href="" class="  pet_nav_mengzhuanti icon-zhoubian"></a><span>周边</span></li>
 				<li><a href="" class="  pet_nav_meirong icon-dongtai"></a><span>动态</span></li>
 				<li><a href="" class="  pet_nav_yiyuan icon-banji"></a><span>班级</span></li>
-					<li><a href="gotoAbout" class="pet_nav_dianpu icon-guanyu"></a><span>关于</span></li>
+				<li><a href="gotoAbout" class="pet_nav_dianpu icon-guanyu"></a><span>关于</span></li>
 			</ul>
 			<blockquote>
 				<p class="my_blockquote">软件开发学习资料</p>
 			</blockquote>
 			<ul class="pet_circle_nav_list">
-				<li><a href="gotoShouji"
-					class="  pet_nav_xinxianshi icon-anzhuo"></a><span>安卓</span></li>
-				<li><a id="#" class="pet_nav_zhangzhishi icon-java"></a><span>java</span></li>
-				<li><a href="#" class="  pet_nav_kantuya icon-java_web"></a><span>jee</span></li>
-				<li><a href="#" class="  pet_nav_mengzhuanti icon-qianduan"></a><span>前端</span></li>
-				<li><a href="#" class="  pet_nav_meirong icon-c_c"></a><span>c/c++</span></li>
-				<li><a href="#" class="  pet_nav_yiyuan icon-net"></a><span>.net</span></li>
+				<li><a href="gotoZiYuan" class="pet_nav_xinxianshi icon-anzhuo"></a><span>安卓</span></li>
+				<li><a href="gotoZiYuan" class="pet_nav_zhangzhishi icon-java"></a><span>java</span></li>
+				<li><a href="gotoZiYuan" class="  pet_nav_kantuya icon-java_web"></a><span>jee</span></li>
+				<li><a href="gotoZiYuan" class="  pet_nav_mengzhuanti icon-qianduan"></a><span>前端</span></li>
+				<li><a href="gotoZiYuan" class="  pet_nav_meirong icon-c_c"></a><span>c/c++</span></li>
+				<li><a href="gotoZiYuan" class="  pet_nav_yiyuan icon-net"></a><span>.net</span></li>
 			</ul>
 			<blockquote>
 				<p class="my_blockquote">帮助我们</p>
@@ -86,8 +84,8 @@
 			<ul class="pet_circle_nav_list">
 				<!-- <li><a id="juanzhu"
 					class="pet_nav_xinxianshi icon-renminbi"></a><span>捐助作者</span></li> -->
-				<li><a id="" class="pet_nav_zhangzhishi icon-jiaruwomen"></a><span>加入我们</span></li>
-				<li><a href="#" class="  pet_nav_kantuya icon-lianxiwomen"></a><span>联系我们</span></li>
+				<li><a href="http://www.chinahg.top" class="pet_nav_zhangzhishi icon-jiaruwomen"></a><span>加入我们</span></li>
+				<li><a href="gotoFK" class="  pet_nav_kantuya icon-lianxiwomen"></a><span>反馈意见</span></li>
 			</ul>
 		</div>
 
@@ -186,6 +184,7 @@
 			</div>
 		</div>
 	</div>
+
 	<script src="js/jquery.min.js"></script>
 	<script src="js/amazeui.min.js"></script>
 	<script>

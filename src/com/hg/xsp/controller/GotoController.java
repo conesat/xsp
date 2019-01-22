@@ -25,7 +25,9 @@ import com.hg.xsp.services.InsertServices;
 import com.hg.xsp.services.SelectServices;
 import com.hg.xsp.staticvalues.StaticValues;
 import com.hg.xsp.tools.Datetool;
+import com.hg.xsp.tools.FileOperation;
 import com.hg.xsp.tools.MyThread;
+import com.hg.xsp.tools.SendMail;
 import com.hg.xsp.tools.XmlTool;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -97,6 +99,22 @@ public class GotoController {
 	/**
 	 * 新
 	 */
+	
+	
+	@RequestMapping(value = "sendMsg", method = RequestMethod.POST)
+	public void sendMsg(HttpServletRequest request,HttpServletResponse response, Model model,String msg) {
+		
+		try {
+			SendMail.sendMail("1092501244@qq.com", "收单新反馈意见:" + msg);
+		} catch (Exception e) {
+		}
+		try {
+			response.getWriter().print(1);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@RequestMapping(value = "gotoLogin", method = RequestMethod.GET)
 	public String gotoLogin(HttpServletRequest request, Model model) {
 		request.getSession().removeAttribute("user");
@@ -109,6 +127,22 @@ public class GotoController {
 	@RequestMapping(value = "gotoAbout", method = RequestMethod.GET)
 	public String gotoAbout(HttpServletRequest request, Model model) {
 		return "about";
+	}
+	
+	@RequestMapping(value = "gotoZiYuan", method = RequestMethod.GET)
+	public String gotoZiYuan(HttpServletRequest request, Model model) {
+		return "ziyuan";
+	}
+	
+	@RequestMapping(value = "gotoFK", method = RequestMethod.GET)
+	public String gotoFK(HttpServletRequest request, Model model) {
+		User user = (User) request.getSession().getAttribute("user");
+		if (user != null) {
+			return "sendmsg";
+		} else {
+			model.addAttribute("msg", "请先登录!");
+			return "index";
+		}
 	}
 	
 	@RequestMapping(value = "gotoIndex", method = RequestMethod.GET)
@@ -130,6 +164,28 @@ public class GotoController {
 			model.addAttribute("msg", "");
 			model.addAttribute("tasks", list);
 			return "shouji";
+		} else {
+			model.addAttribute("msg", "请先登录!");
+			return "index";
+		}
+	}
+	
+	@RequestMapping(value = "gotoDownloadPack", method = RequestMethod.GET)
+	public String gotoDownloadPack(HttpServletRequest request, Model model,String id,String state) {
+		User user = (User) request.getSession().getAttribute("user");
+		if (user != null) {
+			File file=new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + id + "/files/zip/"+id+".zip");
+			if (file.exists()) {
+				model.addAttribute("zip", "1");
+			}
+			model.addAttribute("id", id);
+			model.addAttribute("state", state);
+			if (state.equals("收集中")) {
+				model.addAttribute("msg", "文件还在收集中");
+				return  "redirect:gotoShoujixiangxi?id="+id+"&state="+state;
+			}else {
+				return "downloadpack";
+			}
 		} else {
 			model.addAttribute("msg", "请先登录!");
 			return "index";
@@ -178,19 +234,23 @@ public class GotoController {
 				File[] files=file.listFiles();
 				List<FJFile> fList=new ArrayList<>();
 				for (int j = 0; j < files.length; j++) {
-					fList.add(new FJFile(files[j].getName(), files[j].getAbsolutePath()));
+					if (files[j].isFile()) {
+						fList.add(new FJFile(files[j].getName(), files[j].getAbsolutePath()));
+					}
 				}
 				model.addAttribute("files", fList);
-			}
-			Task task = XmlTool.getTaskById(mail, id);
-			if (task == null) {
-				model.addAttribute("msg", id + " 数据异常");
-			} else {
-				model.addAttribute("task", task);
-				return "shoujiye";
+				Task task = XmlTool.getTaskById(mail, id);
+				if (task == null) {
+					model.addAttribute("msg", id + " 数据异常");
+				} else {
+					model.addAttribute("task", task);
+					model.addAttribute("mail", mail);
+					return "shoujiye";
+				}
+			}else {
+				model.addAttribute("msg", id + " 收集号不存在");
 			}
 		}
-
 		return "index";
 	}
 
@@ -233,6 +293,15 @@ public class GotoController {
 			} else {
 				List<Name> names = XmlTool.getNameStateList(new File(
 						StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + id + "/doname/namelist.xml"));
+				int i=0;
+				for (i = 0; i < names.size(); i++) {
+					if (names.get(i).getState().equals("未提交")) {
+						break;
+					}
+				}
+				if (i==names.size() && !state.equals("已完成")) {
+					XmlTool.changeStackState(user.getMail(), id, "收集完成");
+				}
 				JSONArray jsonArray = JSONArray.fromObject(names);
 				model.addAttribute("id", id);
 				model.addAttribute("names", jsonArray);

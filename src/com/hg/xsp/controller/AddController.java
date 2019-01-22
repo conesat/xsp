@@ -4,15 +4,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.hg.xsp.entity.Name;
 import com.hg.xsp.entity.NameList;
 import com.hg.xsp.entity.Plupload;
@@ -38,6 +42,7 @@ public class AddController {
 	@Autowired
 	private UpDataServices upDataServices;
 
+	
 	/**
 	 * 添加用户组
 	 * 
@@ -52,7 +57,6 @@ public class AddController {
 			String change) {
 		User user = (User) request.getSession().getAttribute("user");
 		JSONObject json = new JSONObject();
-		System.out.println(name);
 		int re = 100;
 		if (user == null) {
 			re = 102;
@@ -119,16 +123,15 @@ public class AddController {
 						StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/doname");
 				if (!floder.exists()) {
 					floder.mkdirs();
-					new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/files")
-							.mkdir();
+					new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/files/upload")
+							.mkdirs();
 				}
-				try {
-					MultipartHttpServletRequest test = (MultipartHttpServletRequest) request;
-					plupload.setRequest(request);
+				if (ServletFileUpload.isMultipartContent(request)) {
 					try {
-						task.setTitle(new String(task.getTitle().getBytes("ISO8859-1"),"UTF-8"));
-						task.setContent(new String(task.getContent().getBytes("ISO8859-1"),"UTF-8"));
-						task.setNameListName(new String(task.getNameListName().getBytes("ISO8859-1"),"UTF-8"));
+						plupload.setRequest(request);
+						task.setTitle(new String(task.getTitle().getBytes("ISO8859-1"), "UTF-8"));
+						task.setContent(new String(task.getContent().getBytes("ISO8859-1"), "UTF-8"));
+						task.setNameListName(new String(task.getNameListName().getBytes("ISO8859-1"), "UTF-8"));
 						// 上传文件
 						PluploadUtil.upload(plupload, new File(
 								StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId() + "/files"));
@@ -150,7 +153,7 @@ public class AddController {
 						FileOperation.DeleteFolder(dir);
 						re = 103;
 					}
-				} catch (Exception e) {
+				} else {
 					try {
 						upDataServices.upDataSJ(task);
 						File file = new File(StaticValues.HOME_PATH + user.getMail() + "/task/dowork/" + task.getId()
@@ -164,7 +167,6 @@ public class AddController {
 						e1.printStackTrace();
 						re = 103;
 					}
-
 				}
 			}
 		}

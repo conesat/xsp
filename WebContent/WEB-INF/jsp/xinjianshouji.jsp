@@ -214,7 +214,7 @@
 
 			//上传成功触发，ps:data是返回值（第三个参数是返回值）
 			uploader.bind('FileUploaded', function(uploader, files, data) {
-				$('#add_sj_jd').width(100);
+				 $('#add_sj_jd').width(100);
 				 var jsonData = JSON.parse(data.response);
 				uploader.files.splice(0, uploader.files.length);
 				if (jsonData.code == '100') {
@@ -229,7 +229,7 @@
 				} else {
 					showGotoDialog("创建失败", "");
 				} 
-				showFils();
+				showFils(); 
 				$('#add_sj_jd').width(0);
 			});
 
@@ -250,26 +250,14 @@
 
 			//绑定各种事件，并在事件监听函数中做你想做的事
 			uploader.bind('FilesAdded', function(uploader, files) {
-				$("#browse").html('<i class="am-icon-cloud-upload"></i> 添加文件');
-				//每个事件监听函数都会传入一些很有用的参数，
-				//我们可以利用这些参数提供的信息来做比如更新UI，提示上传进度等操作
-
-				var myset = new Set();
-				for (var i = 0; i < uploader.files.length; i++) {
-					myset.add(uploader.files[i].name);
-				}
-				if (myset.size != uploader.files.length) {
-					showGotoDialog("存在重复文件名！", "");
-					uploader.files.splice(uploader.files.length - files.length,
-							files.length);
-				}
-				if (uploader.files.length >= 4) {
+				$("#browse").html('<i class="am-icon-cloud-upload"></i> 选择文件');
+				if (uploader.files.length >= 1) {
 					$("#browse").html(
-							'<i class="am-icon-cloud-upload"></i> 文件数量达上限');
+							'<i class="am-icon-cloud-upload"></i> 已选择');
 					$("#browse").attr('disabled', true);
-					if (uploader.files.length > 4) {
-						showGotoDialog("最多选择四个文件！", "");
-						uploader.files.splice(4, uploader.files.length - 4);
+					if (uploader.files.length > 1) {
+						showGotoDialog("最多选择一个文件！", "");
+						uploader.files.splice(1, uploader.files.length - 1);
 					}
 				}
 				showFils();

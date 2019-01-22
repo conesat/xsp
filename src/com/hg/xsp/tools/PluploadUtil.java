@@ -58,7 +58,6 @@ public class PluploadUtil {
 		int chunks = plupload.getChunks(); // 获取总的碎片数
 		int chunk = plupload.getChunk(); // 获取当前碎片(从0开始计数)
 
-		//System.out.println(plupload.getMultipartFile() + "----------");
 
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) plupload.getRequest();
 		MultiValueMap<String, MultipartFile> map = multipartRequest.getMultiFileMap();
@@ -120,6 +119,7 @@ public class PluploadUtil {
 				out.write(buffer, 0, len);
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw e;
 		} finally {
 			// 关闭输入输出流

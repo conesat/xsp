@@ -45,21 +45,36 @@
 			收集码：${id}
 			<div style="float: right;">
 				<c:if test="${state=='收集完成'}">
-					<span class="am-icon-btn am-icon-qrcode"></span>
+					<a href="gotoDownloadPack?id=${id}&state=${state}"><span class="am-icon-btn am-icon-download"></span></a>
 				</c:if>
-				<span style="color: #fd0808;" onclick="deleteShouji('${id}')" class="am-icon-btn am-icon-close"></span>
+				<c:if test="${state=='已过期'}">
+					<a href="gotoDownloadPack?id=${id}&state=${state}"><span class="am-icon-btn am-icon-download"></span></a>
+				</c:if>
+				<span style="color: #fd0808;" onclick="deleteShouji('${id}')"
+					class="am-icon-btn am-icon-close"></span>
 			</div>
 		</div>
 		<div class="am-panel-bd">
-			<button class="am-btn am-btn-default am-btn-block" id='sj_end_time'
-				disabled="disabled" style="margin-bottom: 10px;">收集进行中
-				0天0小时0分 后截止</button>
+			<c:if test="${state=='收集完成'}">
+				<button class="am-btn am-btn-default am-btn-block" 
+					disabled="disabled" style="margin-bottom: 10px;">收集已完成
+					<span id='sj_end_time'>0天0小时0分 后截止</span></button>
+			</c:if>
+			<c:if test="${state=='收集中'}">
+				<button class="am-btn am-btn-default am-btn-block" 
+					disabled="disabled" style="margin-bottom: 10px;">收集进行中
+					<span id='sj_end_time'>0天0小时0分 后截止</span></button>
+			</c:if>
+			<c:if test="${state=='已过期'}">
+				<button class="am-btn am-btn-default am-btn-block" id='sj_end_time'
+					disabled="disabled" style="margin-bottom: 10px;">收集已截止 请及时下载文件</button>
+			</c:if>
+
 			<div data-am-widget="tabs" class="am-tabs am-tabs-default">
 				<ul class="am-tabs-nav am-cf">
 					<li class="am-active"><a href="[data-tab-panel-0]"
 						id='sj_xx_n_a'>未提交0人</a></li>
 					<li class=""><a href="[data-tab-panel-1]" id='sj_xx_y_a'>已提交0人</a></li>
-
 				</ul>
 				<div class="am-tabs-bd">
 					<div data-tab-panel-0 class="am-tab-panel am-active">
@@ -136,6 +151,7 @@
 		var numOfN = 0;//未提交人数
 		var numOfY = 0;//已提交人数
 		var endTime = '${endTime}';
+		var taskid = '${id}';
 
 		$(function() {
 			var names = '${names}';
@@ -154,7 +170,9 @@
 							+ "'"
 							+ jsonData[x].id
 							+ "'"
-							+ ')" class="my-piont-r">重置</span>&nbsp;&nbsp;&nbsp;<span class="my-piont-b">文件</span>';
+							+ ')" class="my-piont-r"></span>&nbsp;&nbsp;&nbsp;<span class="my-piont-b"><a href="downLoadUserFile?filename='
+							+ jsonData[x].fileName + "&id=" + taskid
+							+ '">文件</a></span>';
 					rowTem += '</div></td></tr>';
 					$("#sj_xx_y tbody:last").append(rowTem);
 					numOfY++;
@@ -197,44 +215,38 @@
 				runTime = runTime % 3600;
 				var minute = Math.floor(runTime / 60);
 				$('#sj_end_time').html(
-						"收集进行中 " + day + "天" + hour + "小时" + minute + "分 后截止");
+						 day + "天" + hour + "小时" + minute + "分 后截止");
 			}
 		}
 
-		function chongzhi(name) {
+	/* 	function chongzhi(name) {
 			$("#cz-name").html("重置：" + name + "提交信息");
 			$('#my-confirm').modal({
 				relatedTarget : this,
 				onConfirm : function(options) {
 					window.location.href = "shoujiye.html";
-					/*var $link = $(this.relatedTarget).prev('a');
-					var msg = $link.length ? '你要删除的链接 ID 为 ' + $link.data('id') :
-						'确定了，但不知道要整哪样';
-					alert(msg);*/
 				},
-				// closeOnConfirm: false,
 				onCancel : function() {
-					//alert('算求，不弄了');
 				}
 			});
-		};
-		
+		}; */
+
 		function deleteShouji(id) {
-			$('#delete-dialog_title').html("即将删除收集号为："+id+"的收集记录！删除后欧无法恢复！是否继续？");
+			$('#delete-dialog_title').html(
+					"即将删除收集号为：" + id + "的收集记录！删除后欧无法恢复！是否继续？");
 			$('#my-confirm-show-delete').modal({
 				relatedTarget : this,
 				onConfirm : function(options) {
 					$.ajax({
 						type : "post",
-						url : "deleteShouJi?id="+id,
+						url : "deleteShouJi?id=" + id,
 						async : false,
 						success : function(data) {
 							jsonData = JSON.parse(data);
 							if (jsonData.code == '100') {
 								showGotoDialog("删除完成", "gotoShouji");
 							} else if (jsonData.code == '101') {
-								showGotoDialog("账号已过期，请登录",
-										"gotoLogin");
+								showGotoDialog("账号已过期，请登录", "gotoLogin");
 							} else {
 								showGotoDialog("删除失败", "gotoShouji");
 							}
@@ -249,7 +261,7 @@
 				}
 			});
 		}
-		
+
 		function showGotoDialog(msg, url) {
 			$('#dialog_title').html(msg);
 			$('#my-confirm-show').modal({
@@ -266,7 +278,6 @@
 				}
 			});
 		}
-		
 	</script>
 </body>
 

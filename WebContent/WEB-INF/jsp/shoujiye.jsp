@@ -28,6 +28,9 @@
 			<div class="pet_news_list_tag_name">收集页</div>
 
 			</header>
+			<div class="am-progress am-progress-xs">
+				<div class="am-progress-bar" id='add_sj_jd' style="width: 0%"></div>
+			</div>
 		</div>
 
 	</div>
@@ -94,10 +97,11 @@
 						<div class="am-form-group">
 							<div class="am-form-group am-form-file">
 								<button type="button" class="am-btn am-btn-default am-btn-sm"
-									id='tj_sj_sc'>
-									<i class="am-icon-cloud-upload"></i> 选择要上传的文件
+									id='browse'>
+									<i class="am-icon-cloud-upload"></i> 选择文件
 								</button>
 							</div>
+							<div id="file-list"></div>
 						</div>
 					</div>
 				</div>
@@ -130,14 +134,16 @@
 	<script src="js/plupload.full.min.js"></script>
 	<script type="text/javascript">
 		var endTime = '${task.end}';
+		var taskid = '${task.id}';
+		var mail = '${mail}';
 		var uploader;
 
 		$(function() {
 
 			//实例化一个plupload上传对象
 			uploader = new plupload.Uploader({
-				browse_button : 'tj_sj_sc', //触发文件选择对话框的按钮，为那个元素id
-				url : '${pageContext.request.contextPath}/addShouJi', //服务器端的上传页面地址\
+				browse_button : 'browse', //触发文件选择对话框的按钮，为那个元素id
+				url : '${pageContext.request.contextPath}/submitSJ', //服务器端的上传页面地址\
 				runtimes : 'html5,flash,silverlight',//设置运行环境，会按设置的顺序，可以选择的值有html5,gears,flash,silverlight,browserplus,html
 				flash_swf_url : './js/Moxie.swf',
 				silverlight_xap_url : './js/Moxie.xap',
@@ -151,18 +157,14 @@
 				var jsonData = JSON.parse(data.response);
 				uploader.files.splice(0, uploader.files.length);
 				if (jsonData.code == '100') {
-					showGotoDialog("创建完成", "");
+					showMsgDialog("提交完成");
 				} else if (jsonData.code == '101') {
-					showGotoDialog("账号已过期，请登录", "gotoLogin");
-				} else if (jsonData.code == '102') {
-					$("#add_sj_bt").addClass("my_border_color_red");
-					$("#browse").addClass("my_border_color_red");
-					$("#browse").html(
-							'<i class="am-icon-cloud-upload"></i> 请重新选择文件');
-					showGotoDialog("任务标题已存在,请重新选择文件", "");
+					showMsgDialog("你不在收集名单中");
 				} else {
-					showGotoDialog("创建失败", "");
+					showMsgDialog("提交失败"+jsonData.code);
 				}
+				$("#browse").attr('disabled', false);
+				$("#browse").html('<i class="am-icon-cloud-upload"></i> 选择文件');
 				showFils();
 				$('#add_sj_jd').width(0);
 			});
@@ -174,18 +176,14 @@
 					.bind(
 							'BeforeUpload',
 							function(uploader, files) {
-								uploader.settings.url = '${pageContext.request.contextPath}/addShouJi?id='
-										+ $('#add_sj_id').val()
-										+ "&title"
-										+ $('#add_sj_bt').val()
-										+ "&content="
-										+ $('#add_sj_nr').val()
-										+ "&end="
-										+ $('#add_sj_ri').val()
-										+ " "
-										+ $('#add_sj_sj').val()
-										+ "&nameListName="
-										+ $('#add_sj_qz').val();
+								uploader.settings.url = '${pageContext.request.contextPath}/submitSJ?id='
+										+ taskid
+										+ "&mail="
+										+ mail
+										+ "&username="
+										+ $('#tj_sj_name').val()
+										+ "&userid="
+										+ $('#tj_sj_user_id').val();
 							});
 
 			//绑定各种事件，并在事件监听函数中做你想做的事
@@ -196,10 +194,10 @@
 
 				if (uploader.files.length >= 1) {
 					$("#browse").html(
-							'<i class="am-icon-cloud-upload"></i> 文件数量达上限');
+							'<i class="am-icon-cloud-upload"></i> 已选择');
 					$("#browse").attr('disabled', true);
 					if (uploader.files.length > 1) {
-						showGotoDialog("只能选择一个文件！", "");
+						showMsgDialog("只能选择一个文件！");
 						uploader.files.splice(1, uploader.files.length - 1);
 					}
 				}
@@ -211,16 +209,6 @@
 				$('#add_sj_jd').width(file.percent);
 			});
 
-			$('#doc-form-file').on(
-					'change',
-					function() {
-						var fileNames = '';
-						$.each(this.files, function() {
-							fileNames += '<span class="am-badge">' + this.name
-									+ '</span> ';
-						});
-						$('#file-list').html(fileNames);
-					});
 			getRemainderTime();
 		});
 
@@ -249,15 +237,20 @@
 						"收集进行中 " + day + "天" + hour + "小时" + minute + "分 后截止");
 			}
 		}
-		
+
 		$('#tj_sj_submit').on('click', function() {
 			reset_input_color();
 			if ($('#tj_sj_name').val() == '') {
 				$("#tj_sj_name").addClass("my_border_color_red");
 				showMsgDialog('请输入姓名');
 			} else if ($('#tj_sj_user_id').val() == '') {
-				$("#tj_sj_name").addClass("my_border_color_red");
+				$("#tj_sj_user_id").addClass("my_border_color_red");
 				showMsgDialog('请输入编号');
+			} else if (uploader.files.length == 0) {
+				$("#browse").addClass("my_border_color_red");
+				showMsgDialog('请选择文件');
+			} else {
+				uploader.start();
 			}
 		});
 
@@ -275,12 +268,29 @@
 		}
 
 		function reset_input_color() {
-			$("#add_sj_bt").removeClass("my_border_color_red");
+			$("#tj_sj_name").removeClass("my_border_color_red");
 			$("#add_sj_nr").removeClass("my_border_color_red");
-			$("#add_sj_ri").removeClass("my_border_color_red");
-			$("#add_sj_sj").removeClass("my_border_color_red");
-			$("#add_sj_qz").removeClass("my_border_color_red");
 			$("#browse").removeClass("my_border_color_red");
+		}
+
+		function showFils() {
+			var divs = "";
+			for (var i = 0; i < uploader.files.length; i++) {
+				divs += '<div style="margin-bottom:5px;background-color: #dadada;"><span class="am-badge" style="line-height: 22px;overflow: hidden;width: 70%;text-align: left;">'
+						+ uploader.files[i].name
+						+ '</span> <span style="float:right;" ><button onclick="deleteDiv('
+						+ i
+						+ ')" type="button" class="am-btn am-btn-warning am-btn-xs">删除</button></span></div>';
+			}
+			$('#file-list').html(divs);
+		}
+
+		function deleteDiv(num) {
+			$("#browse").html('<i class="am-icon-cloud-upload"></i> 选择文件');
+			$("#browse").attr('disabled', false);
+			uploader.files.splice(num, 1);
+			showFils();
+			return false;
 		}
 	</script>
 </body>

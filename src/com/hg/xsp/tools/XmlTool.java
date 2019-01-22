@@ -214,7 +214,6 @@ public class XmlTool {
 
 		} catch (Exception e) {
 		}
-
 	}
 
 	/**
@@ -223,6 +222,84 @@ public class XmlTool {
 	 * @param mail 邮箱
 	 * @param id   收集id
 	 */
+	public static boolean changeLoadState(String mail, String id, String userid, String username, String filename,String state) {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setIgnoringElementContentWhitespace(true);
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document xmldoc = db
+					.parse(new File(StaticValues.HOME_PATH + mail + "/task/dowork/" + id + "/doname/namelist.xml"));
+			// 获取根节点
+			NodeList sonlist = xmldoc.getElementsByTagName("user");
+			for (int i = 0; i < sonlist.getLength(); i++) // 循环处理对象
+			{
+				int t = 0;// 统计匹配
+				// 节点属性的处理
+				Element son = (Element) sonlist.item(i);
+				// 循环节点son内的所有子节点
+				for (Node node = son.getFirstChild(); node != null; node = node.getNextSibling()) {
+					// 判断是否为元素节点
+					if (node.getNodeType() == Node.ELEMENT_NODE) {
+						String name = node.getNodeName();
+						String value = node.getFirstChild().getNodeValue();
+						switch (name) {
+						case "id":
+							if (value.equals(userid)) {
+								t++;
+							}
+							break;
+						case "name":
+							if (value.equals(username)) {
+								t++;
+							}
+							break;
+
+						}
+						if (t == 2) {
+							son.getElementsByTagName("state").item(0).setTextContent(state);
+							son.getElementsByTagName("date").item(0).setTextContent(Datetool.getTimeNowThroughDate());
+							son.getElementsByTagName("fileName").item(0).setTextContent(filename);
+							TransformerFactory factory = TransformerFactory.newInstance();
+							Transformer former = factory.newTransformer();
+							former.transform(new DOMSource(xmldoc), new StreamResult(new File(
+									StaticValues.HOME_PATH + mail + "/task/dowork/" + id + "/doname/namelist.xml")));
+							return true;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * 删除节点
+	 * 
+	 * @param mail 邮箱
+	 * @param id   收集id
+	 */
+	public static boolean changeStackState(String mail, String id,String state) {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setIgnoringElementContentWhitespace(true);
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document xmldoc = db.parse(new File(StaticValues.HOME_PATH + mail + "/task/tasks.xml"));
+			// 获取根节点
+			Element root = xmldoc.getDocumentElement();
+			Element son = (Element) selectSingleNode("/tasks/task[@id='" + id + "']", root);
+			son.getElementsByTagName("state").item(0).setTextContent(state);
+			TransformerFactory factory = TransformerFactory.newInstance();
+			Transformer former = factory.newTransformer();
+			former.transform(new DOMSource(xmldoc), new StreamResult(new File(StaticValues.HOME_PATH + mail + "/task/tasks.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public static Task getTaskById(String mail, String id) {
 		Task task = new Task();
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -256,8 +333,9 @@ public class XmlTool {
 						break;
 					case "state":
 						long time = Datetool.getMinOfDateToDate(task.getEnd());
-						if (value.equals("收集中") && time > 0) {
+						if (!value.equals("已过期") && time > 0) {
 							task.setState("已过期");
+							changeStackState(mail,id,"已过期");
 						} else {
 							task.setState(value);
 						}

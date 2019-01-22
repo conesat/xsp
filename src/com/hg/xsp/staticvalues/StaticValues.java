@@ -5,8 +5,8 @@ public class StaticValues {
 	public static float cjtime = 0f;
 	public static boolean cjstate = false;
 	public static int OUT_DAYS=3;//超时天数
-	public static String HOME_PATH="D:/xsp/user/";//windows
-	//public static String HOME_PATH="/root/文档/xsp/user/";//linux
+	//public static String HOME_PATH="D:/xsp/user/";//windows
+	public static String HOME_PATH="/root/文档/xsp/user/";//linux
 	
 	public StaticValues() {
 		new Runnable() {

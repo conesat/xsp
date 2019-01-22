@@ -81,10 +81,18 @@
 													</div>
 												</c:if> <c:if test="${task.state=='收集完成'}">
 													<div class="am-u-sm-2" align="right">
-														<a onclick="dlo('${task.id}')"
+														<a
+															href="gotoDownloadPack?id=${task.id}&state=${task.state}"
+															class="am-icon-btn am-icon-download"></a>
+													</div>
+												</c:if> <c:if test="${task.state=='已过期'}">
+													<div class="am-u-sm-2" align="right">
+														<a
+															href="gotoDownloadPack?id=${task.id}&state=${task.state}"
 															class="am-icon-btn am-icon-download"></a>
 													</div>
 												</c:if>
+
 
 											</li>
 										</c:forEach>
@@ -99,7 +107,8 @@
 		</div>
 	</div>
 
-	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm1" style="top: 20%;">
+	<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm1"
+		style="top: 20%;">
 		<div class="am-modal-dialog">
 			<div id="cz-name" class="am-modal-hd">扫码提交</div>
 			<div class="am-modal-bd">
