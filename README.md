@@ -6,4 +6,4 @@
 预览:
 [地址](http://www.chinahg.top/xsp/gotoIndex)
 
-[![微云视频](https://raw.github.com/GabLeRoux/WebMole/master/ressources/WebMole_Youtube_Video.png)](https://share.weiyun.com/5lZ8CQF)
+[![微云视频](https://github.com/conesat/xsp/blob/master/rec/rev.PNG)](https://share.weiyun.com/5lZ8CQF)
